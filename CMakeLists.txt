@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10.0)
-project(courscpp)
+project(colnago)
 
 # SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -O2")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++17 -Wall -O2")

@@ -15,7 +15,7 @@ namespace courscpp
         public:
             static void get(const shared_ptr<restbed::Session> session)
             {
-                shared_ptr<courscpp::request::RequestTool> m_request = make_shared<courscpp::request::RequestTool>();
+                shared_ptr<courscpp::request::RequestToolAPI> m_request = make_shared<courscpp::request::RequestTool>();
                 const auto request = session->get_request();
                 const string name = request->get_path_parameter("name");
                 const string protocol = request->get_path_parameter("protocol");
