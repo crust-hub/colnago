@@ -2,7 +2,6 @@
 #include "server/m_server.h"
 int main(int argc, char **argv)
 {
-    courscpp::server::m_server server;
-    server.start();
+    colnago::server::server.start();
     return EXIT_SUCCESS;
 }

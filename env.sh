@@ -7,6 +7,8 @@ sudo apt install  libcurl4-openssl-dev &&
 sudo apt install libboost-all-dev -y &&
 sudo apt install -y libasio-dev catch &&
 sudo apt install librestbed-dev &&
+sudo apt install libsqlite3-dev &&
+sudo apt install sqlite &&
 sudo rm -rf ./envtempdir &&
 sudo mkdir envtempdir &&
 cd envtempdir &&

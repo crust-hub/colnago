@@ -12,6 +12,6 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 FILE(GLOB_RECURSE SOURCE_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 ADD_EXECUTABLE(${PROJECT_NAME} src/main.cpp ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} restbed curl)
+target_link_libraries(${PROJECT_NAME} restbed curl sqlite3)
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION /usr/bin)

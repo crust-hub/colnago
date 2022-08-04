@@ -1,31 +1,25 @@
 #pragma once
 #include "request/requestTool.h"
 #include "router/index.h"
-namespace courscpp
+#include <memory>
+#include "dao/dao_api.h"
+#include "dao/init_db.h"
+#include "dao/user/user.h"
+namespace colnago
 {
     namespace server
     {
-        class m_server
+        using namespace std;
+        using namespace colnago::dao;
+        class Server
         {
         public:
-            void start()
-            {
-                using namespace std;
-                //路由信息
-                auto resource = make_shared<restbed::Resource>();
-                resource->set_path("/resource/{protocol: http|https}/{name: .*}");
-                resource->set_method_handler("GET", courscpp::router::index::get);
+            std::shared_ptr<DaoAPI> db;
+            std::shared_ptr<UserDao> userDao;
 
-                // server配置
-                auto settings = make_shared<restbed::Settings>();
-                settings->set_port(20003);
-                // settings->set_default_header("Connection", "close"); //默认响应头
-
-                // create server
-                restbed::Service service;
-                service.publish(resource); //发布路由
-                service.start(settings);   //开启服务
-            }
+        public:
+            void start();
         };
+        extern Server server;
     }
 }

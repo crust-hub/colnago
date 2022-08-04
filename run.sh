@@ -1,3 +1,4 @@
 sudo cmake . &&
 sudo make &&
-sudo ./bin/courscpp
+cd bin &&
+sudo ./colnago
