@@ -1,0 +1,5 @@
+SET(dao_source_files dao_api.h init_db.cpp init_db.h)
+SET(LIBRARY_OUTPUT_PATH lib)
+add_subdirectory(user)
+add_library(dao ${dao_source_files})
+target_link_libraries(dao user)

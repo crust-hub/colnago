@@ -1,7 +1,7 @@
 #include "index.h"
 #include <nlohmann/json.hpp>
 #include <string>
-using json = nlohmann::json;
+#include "entity/response.h"
 
 namespace colnago
 {
@@ -9,48 +9,31 @@ namespace colnago
     {
         namespace Index
         {
+            using json = nlohmann::json;
             using namespace std;
-            //检索用户
+
+            /**
+             * @brief GET /user/:id 检索用户
+             *
+             * @param session
+             */
             void GET(const std::shared_ptr<restbed::Session> session)
             {
                 using namespace std;
-                shared_ptr<colnago::request::RequestToolAPI> m_request = make_shared<colnago::request::RequestTool>();
                 const auto request = session->get_request();
-                const string id = request->get_path_parameter("id");
-
-                colnago::dao::User user(stoi(id), "", 0); //查询所有用户
+                colnago::dao::User user(stoi(request->get_path_parameter("id")), "", 0);
                 auto res_tuple = colnago::server::server.userDao->SELECT(user);
-
-                auto response_content = R"({
-                    "result":true,
-                    "message":"",
-                    "list":[]
-                })"_json;
-
-                response_content["result"] = std::get<0>(res_tuple);
-                response_content["message"] = std::get<1>(res_tuple);
-                auto users = std::get<2>(res_tuple);
-
-                json user_array = json::array();
-                auto user_template = R"(
-                    {
-                        "id":0,
-                        "num":20,
-                        "name":""
-                    })"_json;
-                for (auto item : users)
-                {
-                    user_template["id"] = item.id;
-                    user_template["num"] = item.num;
-                    user_template["name"] = item.name;
-                    user_array.push_back(user_template);
-                }
-                response_content["list"] = user_array;
-
-                session->close(restbed::OK, response_content.dump(), {{"Content-Type", "application/json"}});
+                colnago::entity::BaseResponse<colnago::dao::User> base_response(std::get<0>(res_tuple), std::get<1>(res_tuple), std::get<2>(res_tuple));
+                auto res = base_response.stringify([](colnago::dao::User &user) -> std::string
+                                                   { return user.stringify(); });
+                session->close(restbed::OK, res, {{"Content-Type", "application/json"}});
             }
 
-            //添加用户
+            /**
+             * @brief POST /user/:id 添加用户
+             *
+             * @param session
+             */
             void POST(const std::shared_ptr<restbed::Session> session)
             {
                 const auto request = session->get_request();
@@ -58,40 +41,33 @@ namespace colnago
                 std::pair<bool, std::string> res;
                 session->fetch(content_length, [&res](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
                                {
-                                   //获取请求体的字符串形式
-                                   string user_json(body.begin(), body.end());
-                                   //转为json对象
-                                   json user = json::parse(user_json);
-                                   colnago::dao::User userObj(user["id"], user["name"], user["num"]);
+                                   colnago::dao::User userObj;
+                                   userObj.parse(string(body.begin(), body.end()));
                                    res = colnago::server::server.userDao->INSERT(userObj); });
-                auto res_template = R"(
-                    {
-                        "result":false,
-                        "message":""
-                    })"_json;
-                res_template["result"] = res.first;
-                res_template["message"] = res.second;
-                session->close(restbed::OK, res_template.dump(), {{"Content-Type", "application/json"}});
+                colnago::entity::BaseResponse<> response(res.first, res.second);
+                session->close(restbed::OK, response.stringify(), {{"Content-Type", "application/json"}});
             }
 
-            //删除用户
+            /**
+             * @brief DELETE /user/:id 删除用户
+             *
+             * @param session
+             */
             void DELETE(const std::shared_ptr<restbed::Session> session)
             {
                 const auto request = session->get_request();
                 const string id = request->get_path_parameter("id");
                 colnago::dao::User delete_user(stoi(id), "", 0);
                 auto res = colnago::server::server.userDao->DELETE(delete_user);
-                auto res_template = R"(
-                    {
-                        "result":false,
-                        "message":""
-                    })"_json;
-                res_template["result"] = res.first;
-                res_template["message"] = res.second;
-                session->close(restbed::OK, res_template.dump(), {{"Content-Type", "application/json"}});
+                colnago::entity::BaseResponse<> response(res.first, res.second);
+                session->close(restbed::OK, response.stringify(), {{"Content-Type", "application/json"}});
             }
 
-            //更新用户
+            /**
+             * @brief PUT /user/:id 更新用户
+             *
+             * @param session
+             */
             void PUT(const std::shared_ptr<restbed::Session> session)
             {
                 const auto request = session->get_request();
@@ -99,20 +75,11 @@ namespace colnago
                 std::pair<bool, std::string> res;
                 session->fetch(content_length, [&res](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
                                {
-                                   //获取请求体的字符串形式
-                                   string user_json(body.begin(), body.end());
-                                   //转为json对象
-                                   json user = json::parse(user_json);
-                                   colnago::dao::User userObj(user["id"], user["name"], user["num"]);
-                                   res = colnago::server::server.userDao->UPDATE(userObj); });
-                auto res_template = R"(
-                    {
-                        "result":false,
-                        "message":""
-                    })"_json;
-                res_template["result"] = res.first;
-                res_template["message"] = res.second;
-                session->close(restbed::OK, res_template.dump(), {{"Content-Type", "application/json"}});
+                                    colnago::dao::User userObj;
+                                    userObj.parse(string(body.begin(), body.end()));
+                                    res = colnago::server::server.userDao->INSERT(userObj); });
+                colnago::entity::BaseResponse<> response(res.first, res.second);
+                session->close(restbed::OK, response.stringify(), {{"Content-Type", "application/json"}});
             }
         }
     }

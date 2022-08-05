@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
-#include "dao/init_db.h"
+#include "../../dao/init_db.h"
 #include <sqlite3.h>
 #include <list>
 #include <iostream>
 #include <tuple>
+
 namespace colnago
 {
     namespace dao
@@ -18,6 +19,8 @@ namespace colnago
             User(const int &id, const std::string &name, const int &num) : id(id), name(name), num(num){};
             User() = default;
             friend std::ostream &operator<<(std::ostream &os, const User &user);
+            std::string stringify();
+            void parse(const std::string &json_str);
         };
         std::ostream &operator<<(std::ostream &os, const User &user);
 

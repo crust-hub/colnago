@@ -1,10 +1,11 @@
 #include "user.h"
 #include <sstream>
-#include "utils/sql_easy_runner.h"
+#include "../../util/sql_easy.h"
 #include <cstdio>
 #include <map>
 #include <string>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 namespace colnago
 {
@@ -14,6 +15,22 @@ namespace colnago
         {
             os << user.id << " " << user.name << " " << user.num;
             return os;
+        }
+
+        std::string User::stringify()
+        {
+            using json = nlohmann::json;
+            json j_object = {{"id", id}, {"num", num}, {"name", name}};
+            return j_object.dump();
+        }
+
+        void User::parse(const std::string &json_str)
+        {
+            using json = nlohmann::json;
+            json json_obj = json::parse(json_str);
+            id = json_obj["id"];
+            name = json_obj["name"];
+            num = json_obj["num"];
         }
 
         std::pair<bool, std::string> UserDao::INSERT(const User &user)

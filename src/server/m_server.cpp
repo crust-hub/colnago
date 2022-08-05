@@ -20,7 +20,7 @@ namespace colnago
             std::cout << "start server on 20003 port" << std::endl;
 
             //路由信息
-            const char *userRestFul = "/user/{id: [0-9]*}";
+            const char *userRestFul = "/user/{id: [0-9]+}";
 
             auto resource = make_shared<restbed::Resource>();
             resource->set_path(userRestFul);
