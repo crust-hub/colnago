@@ -1,4 +1,4 @@
-# colnago
+# ![colnago](./doc/img/colnago.png)
 
 Lightweight just-in-time web application
 
