@@ -3,10 +3,10 @@
 #include <restbed>
 #include <nlohmann/json.hpp>
 #include <string>
-#include "../request/request_tool.h"
-#include "../server/m_server.h"
-#include "../dao/user/user.h"
-#include "../dao/dao_api.h"
+#include "request/request_tool.h"
+#include "server/m_server.h"
+#include "dao/user/user.h"
+#include "dao/dao_api.h"
 
 namespace colnago
 {

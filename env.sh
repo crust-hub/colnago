@@ -9,6 +9,7 @@ sudo apt install -y libasio-dev catch &&
 sudo apt install -y librestbed-dev &&
 sudo apt install -y libsqlite3-dev &&
 sudo apt install -y sqlite &&
+sudo apt install -y python3.8 &&
 sudo rm -rf ./envtempdir &&
 sudo mkdir envtempdir &&
 cd envtempdir &&

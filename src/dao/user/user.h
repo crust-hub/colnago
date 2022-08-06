@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "../../dao/init_db.h"
+#include "dao/init_db.h"
 #include <sqlite3.h>
 #include <list>
 #include <iostream>
@@ -33,10 +33,10 @@ namespace colnago
             UserDao(sqlite3 *db) : db(db)
             {
             }
-            std::pair<bool, std::string> INSERT(const User &user);
-            std::pair<bool, std::string> DELETE(const User &user);
-            std::pair<bool, std::string> UPDATE(const User &user);
-            std::tuple<bool, std::string, std::list<User>> SELECT(const User &user);
+            std::pair<bool, std::string> INSERT(User &user);
+            std::pair<bool, std::string> DELETE(User &user);
+            std::pair<bool, std::string> UPDATE(User &user);
+            std::tuple<bool, std::string, std::list<User>> SELECT(User &user);
         };
     }
 }

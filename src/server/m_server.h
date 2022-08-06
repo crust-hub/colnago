@@ -1,10 +1,10 @@
 #pragma once
-#include "../request/request_tool.h"
-#include "../router/index.h"
+#include "request/request_tool.h"
+#include "router/index.h"
 #include <memory>
-#include "../dao/dao_api.h"
-#include "../dao/init_db.h"
-#include "../dao/user/user.h"
+#include "dao/dao_api.h"
+#include "dao/init_db.h"
+#include "dao/user/user.h"
 namespace colnago
 {
     namespace server

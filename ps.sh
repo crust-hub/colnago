@@ -1,2 +1,0 @@
-ps -ef | grep colnago
-

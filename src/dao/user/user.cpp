@@ -1,11 +1,12 @@
 #include "user.h"
 #include <sstream>
-#include "../../util/sql_easy.h"
+#include "util/sql_easy.h"
 #include <cstdio>
 #include <map>
 #include <string>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include "inja/inja.hpp"
 
 namespace colnago
 {
@@ -33,44 +34,45 @@ namespace colnago
             num = json_obj["num"];
         }
 
-        std::pair<bool, std::string> UserDao::INSERT(const User &user)
+        std::pair<bool, std::string> UserDao::INSERT(User &user)
         {
+            nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
-            sql << "INSERT INTO USER (ID,NAME,NUM) ";
-            sql << "VALUES (";
-            sql << user.id
-                << ","
-                << "'" << user.name << "'"
-                << ","
-                << user.num << ");";
+            inja::render_to(sql, R"(
+                INSERT INTO USER (ID,NAME,NUM) 
+                VALUES ({{ id }},'{{ name }}',{{ num }});)",
+                            data);
             return colnago::utils::sql_easy_runner::esay_run(sql, db);
         }
 
-        std::pair<bool, std::string> UserDao::DELETE(const User &user)
+        std::pair<bool, std::string> UserDao::DELETE(User &user)
         {
+            nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
-            sql << "DELETE FROM USER WHERE ID=" << user.id;
+            inja::render_to(sql, R"(DELETE FROM USER WHERE ID = {{ id }})", data);
             return colnago::utils::sql_easy_runner::esay_run(sql, db);
         }
 
-        std::pair<bool, std::string> UserDao::UPDATE(const User &user)
+        std::pair<bool, std::string> UserDao::UPDATE(User &user)
         {
+            nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
-            sql << " UPDATE USER SET NAME = "
-                << "'" << user.name << "'"
-                << ","
-                << " NUM = " << user.num
-                << " WHERE ID = " << user.id << ";";
+            inja::render_to(sql, R"(
+                UPDATE USER SET 
+                NAME = '{{ name }}',NUM = {{ num }}
+                WHERE ID = {{ id }})",
+                            data);
             return colnago::utils::sql_easy_runner::esay_run(sql, db);
         }
 
-        std::tuple<bool, std::string, std::list<User>> UserDao::SELECT(const User &user)
+        std::tuple<bool, std::string, std::list<User>> UserDao::SELECT(User &user)
         {
+            nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
             if (user.id == 0)
-                sql << "SELECT * FROM USER;";
+                inja::render_to(sql, R"(SELECT * FROM USER;)", data);
             else
-                sql << "SELECT * FROM USER WHERE ID=" << user.id << ";";
+                inja::render_to(sql, R"(SELECT * FROM USER WHERE ID = {{ id }};)", data);
             std::list<User> users;
             //回调函数
             auto callback = [](void *data, int argc, char **argv, char **azColName) mutable -> int
