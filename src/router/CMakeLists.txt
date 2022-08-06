@@ -1,4 +1,5 @@
-SET(router_source_files index.cpp index.h)
+FILE(GLOB_RECURSE SOURCE_FILES "*.cpp" "*.h")
+SET(router_source_files ${SOURCE_FILES})
 SET(LIBRARY_OUTPUT_PATH lib)
 add_library(router ${router_source_files})
 target_link_libraries(router)

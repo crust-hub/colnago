@@ -10,7 +10,7 @@ namespace colnago
             userDao = std::make_shared<UserDao>(db->db);
 
             // 创建服务
-            restbed::Service service;
+            service = std::make_shared<restbed::Service>();
 
             // server配置
             auto settings = make_shared<restbed::Settings>();
@@ -18,20 +18,18 @@ namespace colnago
             // settings->set_default_header("Connection", "close"); //默认响应头
 
             std::cout << "start server on 20003 port" << std::endl;
-
-            //路由信息
-            const char *userRestFul = "/user/{id: [0-9]+}";
-
-            auto resource = make_shared<restbed::Resource>();
-            resource->set_path(userRestFul);
-            resource->set_method_handler("GET", colnago::router::Index::GET);
-            resource->set_method_handler("PUT", colnago::router::Index::PUT);
-            resource->set_method_handler("DELETE", colnago::router::Index::DELETE);
-            resource->set_method_handler("POST", colnago::router::Index::POST);
-            service.publish(resource); //发布路由
-
-            service.start(settings); //开启服务
+            //发布路由
+            router_publish();
+            //开启服务
+            service->start(settings);
         }
+
+        void Server::router_publish()
+        {
+            service->publish(colnago::router::user::resource());
+            service->publish(colnago::router::index::resource());
+        }
+
         Server server;
     }
 }

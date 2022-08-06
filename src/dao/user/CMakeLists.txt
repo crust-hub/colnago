@@ -1,4 +1,5 @@
-SET(user_source_files user.cpp)
+FILE(GLOB_RECURSE SOURCE_FILES "*.cpp" "*.h")
+SET(user_source_files ${SOURCE_FILES})
 SET(LIBRARY_OUTPUT_PATH lib)
 add_library(user ${user_source_files})
-target_link_libraries(user util)
+target_link_libraries(user utils)

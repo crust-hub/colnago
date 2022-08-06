@@ -11,8 +11,9 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 add_subdirectory(src)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+FILE(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.h")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} server router request dao util restbed curl sqlite3)
+target_link_libraries(${PROJECT_NAME} server router request dao utils restbed curl sqlite3)
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION /usr/bin)

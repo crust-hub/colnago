@@ -1,6 +1,6 @@
 #pragma once
 #include "request/request_tool.h"
-#include "router/index.h"
+#include "router/router.h"
 #include <memory>
 #include "dao/dao_api.h"
 #include "dao/init_db.h"
@@ -16,6 +16,10 @@ namespace colnago
         public:
             std::shared_ptr<DaoAPI> db;
             std::shared_ptr<UserDao> userDao;
+
+        protected:
+            void router_publish();
+            std::shared_ptr<restbed::Service> service;
 
         public:
             void start();

@@ -1,5 +1,6 @@
 include_directories(${PROJECT_SOURCE_DIR}/src)
-add_subdirectory(util)
+add_subdirectory(utils)
+add_subdirectory(view)
 add_subdirectory(dao)
 add_subdirectory(request)
 add_subdirectory(router)

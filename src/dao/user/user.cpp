@@ -1,6 +1,6 @@
 #include "user.h"
 #include <sstream>
-#include "util/sql_easy.h"
+#include "utils/sql_easy_runner.h"
 #include <cstdio>
 #include <map>
 #include <string>

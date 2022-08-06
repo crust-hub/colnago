@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colnago</title>
+    <style>
+        * {
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+            --color-bg: black;
+        }
+
+        header {
+            background-color: var(--color-bg);
+            height: 3rem;
+            border-bottom: green 1px solid;
+        }
+
+        header p {
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            color: greenyellow;
+            font-weight: bold;
+        }
+
+        main {
+            box-sizing: border-box;
+            width: 100fr;
+            height: 100%;
+            min-height: calc(100vh - 3rem);
+            background-color: var(--color-bg);
+        }
+
+        footer {
+            border-top: green 1px solid;
+            height: 10rem;
+            background-color: var(--color-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* flex-wrap: wrap; */
+        }
+
+        footer p {
+            color: greenyellow;
+            width: 100%;
+            text-align: center;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: greenyellow;
+        }
+
+        main .content {
+            width: 90%;
+            margin-left: 5%;
+            padding-top: 1rem;
+            min-height: 100vh;
+            color: greenyellow;
+            display: flex;
+            justify-content: center;
+        }
+
+        .content .box {
+            width: 96%;
+            height: auto;
+            min-height: 5rem;
+            border: green 1px solid;
+            padding: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .box li {
+            list-style: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <p>colnago</p>
+    </header>
+    <main>
+        <div class="content">
+            <div class="box">
+                <ul>
+                    {% for user in list %}
+                    <li>
+                        <p>{{ user.id }} {{ user.name }} {{ user.num }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>© 2022 crust-hub, Inc.</p>
+        <p><a href="https://github.com/crust-hub" target="_blank">@Github</a></p>
+    </footer>
+
+</body>
+
+</html>
