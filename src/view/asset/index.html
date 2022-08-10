@@ -11,19 +11,19 @@
             border: 0px;
             margin: 0px;
             padding: 0px;
-            --color-bg: black;
+            --color-bg: rgb(254, 113, 113);
         }
 
         header {
             background-color: var(--color-bg);
             height: 3rem;
-            border-bottom: green 1px solid;
+            border-bottom: #8dd4ef 1px solid;
         }
 
         header p {
             padding: 0.5rem;
             font-size: 1.5rem;
-            color: greenyellow;
+            color: #fafafa;
             font-weight: bold;
         }
 
@@ -32,13 +32,13 @@
             width: 100fr;
             height: 100%;
             min-height: calc(100vh - 3rem);
-            background-color: var(--color-bg);
+            background-color: #fafafa;
         }
 
         footer {
-            border-top: green 1px solid;
+            border-top: rgb(103, 127, 233) 1px solid;
             height: 10rem;
-            background-color: var(--color-bg);
+            background-color: #fafafa;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -46,37 +46,96 @@
         }
 
         footer p {
-            color: greenyellow;
+            color: var(--color-bg);
             width: 100%;
             text-align: center;
         }
 
         footer a {
             text-decoration: none;
-            color: greenyellow;
+            color: var(--color-bg);
         }
 
         main .content {
             width: 90%;
             margin-left: 5%;
-            padding-top: 1rem;
+            padding-top: 0.4rem;
             min-height: 100vh;
-            color: greenyellow;
+            color: #1d1d1f;
             display: flex;
             justify-content: center;
         }
 
+        .content .left {
+            flex: 1;
+            padding: 0.5rem;
+        }
+
         .content .box {
+            flex: 4;
             width: 96%;
             height: auto;
             min-height: 5rem;
-            border: green 1px solid;
+            border: rgb(192, 64, 192) 1px solid;
             padding: 1rem;
             margin-bottom: 3rem;
+            border-radius: 0.5rem;
         }
 
         .box li {
             list-style: none;
+        }
+
+        .Card {
+            background-color: rgb(204, 212, 217);
+            color: #1d1d1f;
+            padding: 1rem;
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+
+        .Card ul {
+            border: 1px rgb(244, 166, 166) dashed;
+            padding: 1rem;
+        }
+
+        .Card ul li {
+            border-bottom: 1px darkblue solid;
+        }
+
+        .Card h2 {
+            margin-bottom: 1rem;
+        }
+
+        .Card input {
+            height: 2rem;
+            background-color: rgb(219, 221, 224);
+            width: 50%;
+            font-size: 1.2rem;
+            border: 1px rgb(21, 156, 21) dashed;
+        }
+
+        .Card label {
+            height: 2rem;
+            width: 6rem;
+            display: inline-block;
+        }
+
+        .Card button {
+            width: 4rem;
+            height: 2rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            background-color: gold;
+            border-radius: 0.4rem;
+            margin-top: 1rem;
+        }
+
+        .Card button:hover {
+            background-color: rgb(248, 80, 80);
+            color: aliceblue;
         }
     </style>
 
@@ -88,14 +147,53 @@
     </header>
     <main>
         <div class="content">
+            <div class="left">
+                Build Your Application In C++
+            </div>
             <div class="box">
-                <ul>
-                    {% for user in list %}
-                    <li>
-                        <p>{{ user.id }} {{ user.name }} {{ user.num }}</p>
-                    </li>
-                    {% endfor %}
-                </ul>
+                <div class="Card">
+                    <h2>GET</h2>
+                    <ul class="GET">
+                        {% for user in list %}
+                        <li>
+                            <p>{{ user.id }} {{ user.name }} {{ user.num }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="Card">
+                    <h2>POST</h2>
+                    <form id="form_POST">
+                        <label>ID</label>
+                        <input type="number" /><br />
+                        <label>NAME</label>
+                        <input type="text" /><br />
+                        <label>NUM</label>
+                        <input type="number" /><br />
+                        <button type="submit" id="submit_POST">submit</button>
+                    </form>
+                </div>
+                <div class="Card">
+                    <h2>PUT</h2>
+                    <form id="form_PUT">
+                        <label>ID</label>
+                        <input type="number" /><br />
+                        <label>NAME</label>
+                        <input type="text" /><br />
+                        <label>NUM</label>
+                        <input type="number" /><br />
+                        <button type="submit" id="submit_PUT">submit</button>
+                    </form>
+                </div>
+                <div class="Card">
+                    <h2>DELETE</h2>
+                    <form id="form_DELETE">
+                        <label>ID</label>
+                        <input type="number" /><br />
+                        <button type="submit" id="submit_DELETE">submit</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </main>
@@ -103,7 +201,93 @@
         <p>© 2022 crust-hub, Inc.</p>
         <p><a href="https://github.com/crust-hub" target="_blank">@Github</a></p>
     </footer>
-
 </body>
+<script>
+    const User = {
+        post(user) {
+            fetch('/user/' + user.id, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        },
+        put(user) {
+            fetch('/user/' + user.id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        },
+        delete(user) {
+            fetch('/user/' + user.id, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    };
+    let buttons = [];
+    ["POST", "PUT", "DELETE"].forEach(item => {
+        buttons.push(document.getElementById("submit_" + item));
+    });
+
+    //POST
+    buttons[0].onclick = function (e) {
+        e.preventDefault();
+        let inputs = document.getElementById("form_POST").getElementsByTagName("input");
+        let user = {
+            id: Number(inputs[0].value),
+            name: inputs[1].value,
+            num: Number(inputs[2].value)
+        };
+        User.post(user);
+    }
+    //PUT
+    buttons[1].onclick = function (e) {
+        e.preventDefault();
+        let inputs = document.getElementById("form_PUT").getElementsByTagName("input");
+        let user = {
+            id: Number(inputs[0].value),
+            name: inputs[1].value,
+            num: Number(inputs[2].value)
+        };
+        User.put(user);
+    }
+    //DELETE
+    buttons[2].onclick = function (e) {
+        e.preventDefault();
+        let inputs = document.getElementById("form_DELETE").getElementsByTagName("input");
+        let user = {
+            id: Number(inputs[0].value)
+        };
+        User.delete(user);
+    }
+</script>
 
 </html>
