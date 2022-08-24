@@ -28,7 +28,7 @@ namespace colnago
         void ColnagoDB::init()
         {
             const char *sql = "CREATE TABLE user("
-                              "ID INT PRIMARY KEY NOT NULL,"
+                              "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                               "NAME TEXT NOT NULL,"
                               "NUM INT NOT NULL);";
             // execute sql

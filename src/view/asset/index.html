@@ -11,13 +11,13 @@
             border: 0px;
             margin: 0px;
             padding: 0px;
-            --color-bg: rgb(254, 113, 113);
+            --color-bg: rgb(243, 95, 95);
         }
 
         header {
             background-color: var(--color-bg);
             height: 3rem;
-            border-bottom: #8dd4ef 1px solid;
+            border-bottom: #d2d4d4 1px solid;
         }
 
         header p {
@@ -33,6 +33,7 @@
             height: 100%;
             min-height: calc(100vh - 3rem);
             background-color: #fafafa;
+            color: #1d1d1f;
         }
 
         footer {
@@ -66,18 +67,13 @@
             justify-content: center;
         }
 
-        .content .left {
-            flex: 1;
-            padding: 0.5rem;
-        }
-
         .content .box {
             flex: 4;
             width: 96%;
             height: auto;
             min-height: 5rem;
-            border: rgb(192, 64, 192) 1px solid;
-            padding: 1rem;
+            /* border: rgb(192, 158, 64) 1px solid; */
+            padding: 0.5rem;
             margin-bottom: 3rem;
             border-radius: 0.5rem;
         }
@@ -87,22 +83,29 @@
         }
 
         .Card {
-            background-color: rgb(204, 212, 217);
+            background-color: rgb(217, 207, 204);
             color: #1d1d1f;
             padding: 1rem;
-            font-size: 1.3rem;
+            font-size: 1rem;
             margin-top: 1rem;
             border-radius: 0.5rem;
             position: relative;
+            box-shadow: #9b9b9b 0px 0px 5px;
+        }
+
+        .Card p {
+            font-size: 1rem;
+            padding: 0.5rem 0rem;
         }
 
         .Card ul {
-            border: 1px rgb(244, 166, 166) dashed;
-            padding: 1rem;
+            border: 1px rgb(41, 57, 102) dashed;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
         }
 
         .Card ul li {
-            border-bottom: 1px darkblue solid;
+            border-bottom: 1px rgb(113, 113, 121) solid;
         }
 
         .Card h2 {
@@ -111,15 +114,17 @@
 
         .Card input {
             height: 2rem;
-            background-color: rgb(219, 221, 224);
+            background-color: rgb(245, 245, 245);
             width: 100%;
-            max-width:20rem;
-            font-size: 1.2rem;
+            max-width: 20rem;
+            font-size: 1rem;
             border: 1px rgb(21, 156, 21) dashed;
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
         }
 
         .Card label {
-            height: 2rem;
+            height: 1rem;
             width: 6rem;
             display: inline-block;
         }
@@ -129,9 +134,10 @@
             height: 2rem;
             cursor: pointer;
             font-size: 1.1rem;
-            background-color: gold;
+            background-color: rgb(192, 118, 113);
             border-radius: 0.4rem;
             margin-top: 1rem;
+            color: #fafafa;
         }
 
         .Card button:hover {
@@ -144,16 +150,18 @@
 
 <body>
     <header>
-        <p>colnago</p>
+        <p>街角文字馆(colnago)</p>
     </header>
     <main>
         <div class="content">
-            <div class="left">
-                Build Your Application In C++
-            </div>
             <div class="box">
+                <p>
+                    <em>街角文字馆</em> 是一个开放的文字记录平台，你可以在此分享一段你喜欢的话、一篇日记、或者令你开心的事，我们的宗旨是自由开放。
+                </p>
+
                 <div class="Card">
-                    <h2>GET</h2>
+                    <h2>广播世界</h2>
+                    <p>来自游客分享的文字记录</p>
                     <ul class="GET">
                         {% for user in list %}
                         <li>
@@ -163,38 +171,38 @@
                     </ul>
                 </div>
                 <div class="Card">
-                    <h2>POST</h2>
+                    <h2>诉说你的心声</h2>
+                    <p>分享自己的内容到广播世界</p>
                     <form id="form_POST">
-                        <label>ID</label>
-                        <input type="number" /><br />
-                        <label>NAME</label>
-                        <input type="text" /><br />
-                        <label>NUM</label>
-                        <input type="number" /><br />
-                        <button type="submit" id="submit_POST">submit</button>
+                        <label>文字内容</label>
+                        <input type="text" placeholder="你想说的话" /><br />
+                        <label>幸运数字</label>
+                        <input type="number" placeholder="用于以确定你的身份，建议下次仍使用你自己的幸运数字" /><br />
+                        <button type="submit" id="submit_POST">提交</button>
                     </form>
                 </div>
                 <div class="Card">
-                    <h2>PUT</h2>
+                    <h2>使已有变更好</h2>
+                    <p>更新已有的内容</p>
                     <form id="form_PUT">
-                        <label>ID</label>
-                        <input type="number" /><br />
-                        <label>NAME</label>
-                        <input type="text" /><br />
-                        <label>NUM</label>
-                        <input type="number" /><br />
-                        <button type="submit" id="submit_PUT">submit</button>
+                        <label>编号</label>
+                        <input type="number" placeholder="需要更新的编号" /><br />
+                        <label>新的内容</label>
+                        <input type="text" placeholder="要更新为的内容" /><br />
+                        <label>幸运数字</label>
+                        <input type="number" placeholder="你的幸运数字" /><br />
+                        <button type="submit" id="submit_PUT">提交</button>
                     </form>
                 </div>
                 <div class="Card">
-                    <h2>DELETE</h2>
+                    <h2>删除不美好</h2>
+                    <p>每个人都是文字馆的馆长，删除已有的内容</p>
                     <form id="form_DELETE">
-                        <label>ID</label>
-                        <input type="number" /><br />
-                        <button type="submit" id="submit_DELETE">submit</button>
+                        <label>编号</label>
+                        <input type="number" placeholder="不友善的内容编号" /><br />
+                        <button type="submit" id="submit_DELETE">提交</button>
                     </form>
                 </div>
-
             </div>
         </div>
     </main>
@@ -263,9 +271,9 @@
         e.preventDefault();
         let inputs = document.getElementById("form_POST").getElementsByTagName("input");
         let user = {
-            id: Number(inputs[0].value),
-            name: inputs[1].value,
-            num: Number(inputs[2].value)
+            id: 0,
+            name: inputs[0].value,
+            num: Number(inputs[1].value)
         };
         User.post(user);
     }
