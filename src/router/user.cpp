@@ -50,6 +50,7 @@ namespace colnago
                                    colnago::dao::User userObj;
                                    userObj.parse(string(body.begin(), body.end()));
                                    res = colnago::server::server.userDao->INSERT(userObj); });
+                cout << "insert end" << endl;
                 colnago::entity::BaseResponse<> response(res.first, res.second);
                 session->close(restbed::OK, response.stringify(), {{"Content-Type", "application/json"}});
             }

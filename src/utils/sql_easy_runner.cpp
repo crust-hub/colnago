@@ -5,6 +5,7 @@ namespace colnago
     {
         namespace sql_easy_runner
         {
+
             std::pair<bool, std::string> esay_run(const stringstream &sql, sqlite3 *db)
             {
                 char *zErrMsg = nullptr;
@@ -18,6 +19,7 @@ namespace colnago
                 sqlite3_free(zErrMsg);
                 return res;
             }
+
             std::pair<bool, std::string> callback_run(const stringstream &sql, sqlite3 *db, int (*callback)(void *data, int argc, char **argv, char **azColName), void *data)
             {
                 char *zErrMsg = nullptr;
@@ -31,6 +33,7 @@ namespace colnago
                 sqlite3_free(zErrMsg);
                 return res;
             }
+
         }
     }
 } // namespace colnago

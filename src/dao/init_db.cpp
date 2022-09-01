@@ -29,7 +29,7 @@ namespace colnago
         {
             const char *sql = "CREATE TABLE user("
                               "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                              "NAME TEXT NOT NULL,"
+                              "NAME MEMO NOT NULL,"
                               "NUM INT NOT NULL);";
             // execute sql
             char *zErrMsg = nullptr;

@@ -37,14 +37,13 @@ namespace colnago
 
         std::pair<bool, std::string> UserDao::INSERT(User &user)
         {
+            // escape character
             nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
-            inja::render_to(sql, R"(
-                INSERT INTO USER (NAME,NUM) 
-                VALUES ('{{ name }}',{{ num }});)",
-                            data);
-            // cout << sql.str() << endl;
-            return colnago::utils::sql_easy_runner::esay_run(sql, db);
+            inja::render_to(sql, R"(INSERT INTO USER (NAME,NUM) VALUES ('{{ name }}',{{ num }});)", data);
+            cout << sql.str() << endl;
+            auto res = colnago::utils::sql_easy_runner::esay_run(sql, db);
+            return res;
         }
 
         std::pair<bool, std::string> UserDao::DELETE(User &user)
@@ -52,7 +51,7 @@ namespace colnago
             nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
             inja::render_to(sql, R"(DELETE FROM USER WHERE ID = {{ id }})", data);
-            // cout << sql.str() << endl;
+            cout << sql.str() << endl;
             return colnago::utils::sql_easy_runner::esay_run(sql, db);
         }
 
@@ -60,12 +59,8 @@ namespace colnago
         {
             nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
-            inja::render_to(sql, R"(
-                UPDATE USER SET 
-                NAME = '{{ name }}',NUM = {{ num }}
-                WHERE ID = {{ id }})",
-                            data);
-            // cout << sql.str() << endl;
+            inja::render_to(sql, R"(UPDATE USER SET NAME = '{{ name }}',NUM = {{ num }} WHERE ID = {{ id }})", data);
+            cout << sql.str() << endl;
             return colnago::utils::sql_easy_runner::esay_run(sql, db);
         }
 
@@ -77,7 +72,7 @@ namespace colnago
                 inja::render_to(sql, R"(SELECT * FROM USER ORDER BY ID;)", data);
             else
                 inja::render_to(sql, R"(SELECT * FROM USER WHERE ID = {{ id }} ORDER BY ID;)", data);
-            // cout << sql.str() << endl;
+            cout << sql.str() << endl;
             std::list<User> users;
             //回调函数
             auto callback = [](void *data, int argc, char **argv, char **azColName) mutable -> int
