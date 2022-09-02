@@ -20,9 +20,7 @@ RUN apt install -y \
 CMD git clone https://github.com/Corvusoft/restbed.git
 WORKDIR /colnago/restbed
 CMD cmake .
-CMD make install
-CMD source /etc/profile
-CMD rm -rf /colnago/restbed
+CMD make instal
 
 WORKDIR /colnago
 CMD rm -rf CMakeCache.txt \
