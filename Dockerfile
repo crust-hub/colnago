@@ -15,7 +15,14 @@ RUN apt install -y \
     catch \
     libsqlite3-dev \ 
     sqlite \
-    librestbed-dev
+    git
+
+CMD git clone https://github.com/Corvusoft/restbed.git
+WORKDIR /colnago/restbed
+CMD cmake .
+CMD make install
+CMD source /etc/profile
+CMD rm -rf /colnago/restbed
 
 WORKDIR /colnago
 CMD rm -rf CMakeCache.txt \
