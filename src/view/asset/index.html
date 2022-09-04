@@ -96,6 +96,7 @@
         .Card p {
             font-size: 1rem;
             padding: 0.5rem 0rem;
+            word-wrap: break-word;
         }
 
         .Card ul {
@@ -160,8 +161,8 @@
                 </p>
 
                 <div class="Card">
-                    <h2>广播世界</h2>
-                    <p>来自游客分享的文字记录</p>
+                    <h2>记录世界</h2>
+                    <p>来自游客内容分享</p>
                     <ul class="GET">
                         {% for user in list %}
                         <li>
@@ -171,36 +172,14 @@
                     </ul>
                 </div>
                 <div class="Card">
-                    <h2>诉说你的心声</h2>
+                    <h2>分享你想说的</h2>
                     <p>分享自己的内容到广播世界</p>
                     <form id="form_POST">
                         <label>文字内容</label>
                         <input type="text" placeholder="你想说的话" /><br />
                         <label>幸运数字</label>
                         <input type="number" placeholder="用于以确定你的身份，建议下次仍使用你自己的幸运数字" /><br />
-                        <button type="submit" id="submit_POST">提交</button>
-                    </form>
-                </div>
-                <div class="Card">
-                    <h2>使已有变更好</h2>
-                    <p>更新已有的内容</p>
-                    <form id="form_PUT">
-                        <label>编号</label>
-                        <input type="number" placeholder="需要更新的编号" /><br />
-                        <label>新的内容</label>
-                        <input type="text" placeholder="要更新为的内容" /><br />
-                        <label>幸运数字</label>
-                        <input type="number" placeholder="你的幸运数字" /><br />
-                        <button type="submit" id="submit_PUT">提交</button>
-                    </form>
-                </div>
-                <div class="Card">
-                    <h2>删除不美好</h2>
-                    <p>每个人都是文字馆的馆长，删除已有的内容</p>
-                    <form id="form_DELETE">
-                        <label>编号</label>
-                        <input type="number" placeholder="不友善的内容编号" /><br />
-                        <button type="submit" id="submit_DELETE">提交</button>
+                        <button type="submit" id="submit_POST">发布</button>
                     </form>
                 </div>
             </div>
