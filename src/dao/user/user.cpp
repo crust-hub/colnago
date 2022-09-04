@@ -41,6 +41,9 @@ namespace colnago
             nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
             inja::render_to(sql, R"(INSERT INTO USER (NAME,NUM) VALUES ('{{ name }}',{{ num }});)", data);
+            if("" == data["name"]){
+                return std::pair<bool,std::string>(false,"name cannot none");
+            }
             cout << sql.str() << endl;
             auto res = colnago::utils::sql_easy_runner::esay_run(sql, db);
             return res;
