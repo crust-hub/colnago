@@ -21,18 +21,24 @@ namespace colnago
 
         std::string User::stringify()
         {
+            using namespace colnago::utils::sql_easy_runner;
             using json = nlohmann::json;
-            json j_object = {{"id", id}, {"num", num}, {"name", name}};
+            //将字符串中的转义字符进行转义处理
+            json j_object = {{"id", id}, {"num", num}, {"name", escap_char(name)}};
+            //std::cout<<j_object.dump()<<std::endl;
             return j_object.dump();
         }
 
         void User::parse(const std::string &json_str)
         {
             using json = nlohmann::json;
-            json json_obj = json::parse(json_str);
-            id = json_obj["id"];
-            name = json_obj["name"];
-            num = json_obj["num"];
+            try{
+                json json_obj = json::parse(json_str);
+                id = json_obj["id"];
+                name = json_obj["name"];
+                num = json_obj["num"];
+            }catch(...){
+            }
         }
 
         std::pair<bool, std::string> UserDao::INSERT(User &user)

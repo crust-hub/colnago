@@ -11,7 +11,7 @@
             border: 0px;
             margin: 0px;
             padding: 0px;
-            --color-bg: rgb(243, 95, 95);
+            --color-bg: rgb(32, 32, 32);
         }
 
         header {
@@ -83,7 +83,7 @@
         }
 
         .Card {
-            background-color: rgb(217, 207, 204);
+            background-color: #fafafa;
             color: #1d1d1f;
             padding: 1rem;
             font-size: 1rem;
@@ -113,10 +113,13 @@
             margin-bottom: 1rem;
         }
 
-        .Card input {
-            height: 2rem;
+        .Card textarea {
+            height: auto;
+            min-height: 8rem;
             background-color: rgb(245, 245, 245);
             width: 100%;
+            padding: 0.5rem;
+            word-wrap: break-word;
             max-width: 20rem;
             font-size: 1rem;
             border: 1px rgb(21, 156, 21) dashed;
@@ -124,18 +127,12 @@
             padding-left: 0.5rem;
         }
 
-        .Card label {
-            height: 1rem;
-            width: 6rem;
-            display: inline-block;
-        }
-
         .Card button {
             width: 4rem;
             height: 2rem;
             cursor: pointer;
             font-size: 1.1rem;
-            background-color: rgb(192, 118, 113);
+            background-color: rgb( 32, 32, 32);
             border-radius: 0.4rem;
             margin-top: 1rem;
             color: #fafafa;
@@ -151,13 +148,13 @@
 
 <body>
     <header>
-        <p>街角文字馆(colnago)</p>
+        <p>WriterHub</p>
     </header>
     <main>
         <div class="content">
             <div class="box">
                 <p>
-                    <em>街角文字馆</em> 是一个开放的文字记录平台，你可以在此分享一段你喜欢的话、一篇日记、或者令你开心的事，我们的宗旨是自由开放。
+                    <em>WriterHub</em> 是一个开放的文字记录平台，你可以在此分享一段你喜欢的话、一篇日记、或者令你开心的事，我们的宗旨是自由开放。
                 </p>
 
                 <div class="Card">
@@ -175,10 +172,10 @@
                     <h2>分享你想说的</h2>
                     <p>分享自己的内容到广播世界</p>
                     <form id="form_POST">
-                        <label>文字内容</label>
-                        <input type="text" placeholder="你想说的话" /><br />
-                        <label>幸运数字</label>
-                        <input type="number" placeholder="用于以确定你的身份，建议下次仍使用你自己的幸运数字" /><br />
+                        <p>文字内容</p>
+                        <textarea placeholder="你想说的话" ></textarea><br />
+                        <p>幸运数字</p>
+                        <textarea placeholder="用于以确定你的身份，建议下次仍使用你自己的幸运数字" ></textarea><br />
                         <button type="submit" id="submit_POST">发布</button>
                     </form>
                 </div>
@@ -248,33 +245,13 @@
     //POST
     buttons[0].onclick = function (e) {
         e.preventDefault();
-        let inputs = document.getElementById("form_POST").getElementsByTagName("input");
+        let inputs = document.getElementById("form_POST").getElementsByTagName("textarea");
         let user = {
             id: 0,
             name: inputs[0].value,
             num: Number(inputs[1].value)
         };
         User.post(user);
-    }
-    //PUT
-    buttons[1].onclick = function (e) {
-        e.preventDefault();
-        let inputs = document.getElementById("form_PUT").getElementsByTagName("input");
-        let user = {
-            id: Number(inputs[0].value),
-            name: inputs[1].value,
-            num: Number(inputs[2].value)
-        };
-        User.put(user);
-    }
-    //DELETE
-    buttons[2].onclick = function (e) {
-        e.preventDefault();
-        let inputs = document.getElementById("form_DELETE").getElementsByTagName("input");
-        let user = {
-            id: Number(inputs[0].value)
-        };
-        User.delete(user);
     }
 </script>
 
