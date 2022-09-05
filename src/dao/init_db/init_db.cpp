@@ -1,4 +1,5 @@
-#include "init_db.h"
+#include "dao/init_db/init_db.h"
+
 namespace colnago
 {
     namespace dao
@@ -11,10 +12,7 @@ namespace colnago
                 fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
                 exit(0);
             }
-            else
-            {
-                fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-            }
+            fprintf(stdout, "opened database: %s\n", sqlite3_errmsg(db));
         }
 
         ColnagoDB::~ColnagoDB()
@@ -27,10 +25,10 @@ namespace colnago
 
         void ColnagoDB::init()
         {
-            const char *sql = "CREATE TABLE user("
+            const char *sql = "CREATE TABLE post("
                               "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                              "NAME MEMO NOT NULL,"
-                              "NUM INT NOT NULL);";
+                              "TEXT MEMO NOT NULL,"
+                              "DATE DATETIME NOT NULL);";
             // execute sql
             char *zErrMsg = nullptr;
             int rc = sqlite3_exec(db, sql, nullptr, 0, &zErrMsg);

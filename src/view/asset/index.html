@@ -132,7 +132,7 @@
             height: 2rem;
             cursor: pointer;
             font-size: 1.1rem;
-            background-color: rgb( 32, 32, 32);
+            background-color: rgb(32, 32, 32);
             border-radius: 0.4rem;
             margin-top: 1rem;
             color: #fafafa;
@@ -161,9 +161,9 @@
                     <h2>记录世界</h2>
                     <p>来自游客内容分享</p>
                     <ul class="GET">
-                        {% for user in list %}
+                        {% for post in list %}
                         <li>
-                            <p>{{ user.id }} {{ user.name }} {{ user.num }}</p>
+                            <p>{{ post.id }} {{ post.text }} {{ post.date }}</p>
                         </li>
                         {% endfor %}
                     </ul>
@@ -173,9 +173,7 @@
                     <p>分享自己的内容到广播世界</p>
                     <form id="form_POST">
                         <p>文字内容</p>
-                        <textarea placeholder="你想说的话" ></textarea><br />
-                        <p>幸运数字</p>
-                        <textarea placeholder="用于以确定你的身份，建议下次仍使用你自己的幸运数字" ></textarea><br />
+                        <textarea placeholder="你想说的话"></textarea><br />
                         <button type="submit" id="submit_POST">发布</button>
                     </form>
                 </div>
@@ -188,14 +186,14 @@
     </footer>
 </body>
 <script>
-    const User = {
-        post(user) {
-            fetch('/user/' + user.id, {
+    const Post = {
+        post(post) {
+            fetch('/post/' + post.id, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(user),
+                    body: JSON.stringify(post),
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -206,13 +204,13 @@
                     console.error('Error:', error);
                 });
         },
-        put(user) {
-            fetch('/user/' + user.id, {
+        put(post) {
+            fetch('/post/' + post.id, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(user),
+                    body: JSON.stringify(post),
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -223,8 +221,8 @@
                     console.error('Error:', error);
                 });
         },
-        delete(user) {
-            fetch('/user/' + user.id, {
+        delete(post) {
+            fetch('/post/' + post.id, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
@@ -246,12 +244,11 @@
     buttons[0].onclick = function (e) {
         e.preventDefault();
         let inputs = document.getElementById("form_POST").getElementsByTagName("textarea");
-        let user = {
+        let post = {
             id: 0,
-            name: inputs[0].value,
-            num: Number(inputs[1].value)
+            text: inputs[0].value
         };
-        User.post(user);
+        Post.post(post);
     }
 </script>
 

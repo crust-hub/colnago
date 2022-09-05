@@ -2,7 +2,7 @@
 #include <sqlite3.h>
 #include <cstdio>
 #include <iostream>
-#include "dao_api.h"
+#include "dao/dao_api.h"
 #include <memory>
 namespace colnago
 {

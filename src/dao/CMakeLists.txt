@@ -1,6 +1,0 @@
-FILE(GLOB_RECURSE SOURCE_FILES "*.cpp" "*.h")
-SET(dao_source_files ${SOURCE_FILES})
-SET(LIBRARY_OUTPUT_PATH lib)
-add_subdirectory(user)
-add_library(dao ${dao_source_files})
-target_link_libraries(dao user)

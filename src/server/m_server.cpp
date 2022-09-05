@@ -1,4 +1,4 @@
-#include "m_server.h"
+#include "server/m_server.h"
 namespace colnago
 {
     namespace server
@@ -7,7 +7,7 @@ namespace colnago
         {
             //数据库配置
             db = ColnagoDB::create("colnago.db");
-            userDao = std::make_shared<UserDao>(db->db);
+            postDao = std::make_shared<PostDao>(db->db);
 
             // 创建服务
             service = std::make_shared<restbed::Service>();
@@ -26,7 +26,7 @@ namespace colnago
 
         void Server::router_publish()
         {
-            service->publish(colnago::router::user::resource());
+            service->publish(colnago::router::post::resource());
             service->publish(colnago::router::index::resource());
         }
 
