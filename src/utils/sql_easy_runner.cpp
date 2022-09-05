@@ -1,4 +1,7 @@
+#include <iostream>
 #include "sql_easy_runner.h"
+
+
 namespace colnago
 {
     namespace utils
@@ -8,13 +11,37 @@ namespace colnago
 
             std::string escap_char(const std::string& str)
             {
-                std::string res=str;
-                size_t i=0;
+                std::string res = str;
+                size_t i = 0;
                 while(i<res.size()){
-                    if(res[i]=='\''||res[i]=='\"'){
+                    if(res[i]=='\"'&&i!=0&&res[i-1]!='\\'){
+                        res.insert(i,1,'\\');
+                        i++;
+                    }else if(res[i]=='\''&&i!=0&&res[i-1]!='\''){
+                        res.insert(i,1,'\'');
+                        i++;
+                    }else if(res[i]=='\\'&&i!=0&&res[i-1]!='\\'){
                         res.insert(i,1,'\\');
                         i++;
                     }
+                    i++;
+                }
+                return res;
+            }
+
+            std::string parse_escap_char(const std::string& str){
+                std::string res = str;
+                long int i = 0;
+                long int size=res.size();
+                while(i<size-1){
+                    if(res[i]=='\''&&res[i+1]=='\''){
+                        res.erase(i,1);
+                    }else if(res[i]=='\\'&&res[i+1]=='\"'){
+                        res.erase(i,1);
+                    }else if(res[i]=='\\'&&res[i+1]=='\\'){
+                        res.erase(i,1);
+                    }
+                    size=res.size();
                     i++;
                 }
                 return res;

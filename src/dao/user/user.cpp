@@ -23,8 +23,8 @@ namespace colnago
         {
             using namespace colnago::utils::sql_easy_runner;
             using json = nlohmann::json;
-            //将字符串中的转义字符进行转义处理
-            json j_object = {{"id", id}, {"num", num}, {"name", escap_char(name)}};
+            //escap char
+            json j_object = {{"id", id}, {"num", num}, {"name", name}};
             //std::cout<<j_object.dump()<<std::endl;
             return j_object.dump();
         }
@@ -32,10 +32,11 @@ namespace colnago
         void User::parse(const std::string &json_str)
         {
             using json = nlohmann::json;
+            using namespace colnago::utils::sql_easy_runner;
             try{
                 json json_obj = json::parse(json_str);
                 id = json_obj["id"];
-                name = json_obj["name"];
+                name = escap_char(json_obj["name"]);
                 num = json_obj["num"];
             }catch(...){
             }
@@ -75,6 +76,7 @@ namespace colnago
 
         std::tuple<bool, std::string, std::list<User>> UserDao::SELECT(User &user)
         {
+            using namespace colnago::utils::sql_easy_runner;
             nlohmann::json data = nlohmann::json::parse(user.stringify());
             std::stringstream sql;
             if (user.id == 0)
@@ -98,7 +100,8 @@ namespace colnago
                 }
                 User m_user;
                 m_user.id = stoi(m_map["ID"]);
-                m_user.name = m_map["NAME"];
+                std::string name=m_map["NAME"];
+                m_user.name = parse_escap_char(name);
                 m_user.num = stoi(m_map["NUM"]);
                 users.push_back(m_user);
                 return 0;
