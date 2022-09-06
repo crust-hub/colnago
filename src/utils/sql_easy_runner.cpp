@@ -1,7 +1,6 @@
 #include <iostream>
 #include "sql_easy_runner.h"
 
-
 namespace colnago
 {
     namespace utils
@@ -9,39 +8,77 @@ namespace colnago
         namespace sql_easy_runner
         {
 
-            std::string escap_char(const std::string& str)
+            std::string escap_char(const std::string &str)
             {
                 std::string res = str;
-                size_t i = 0;
-                while(i<res.size()){
-                    if(res[i]=='\"'&&i!=0&&res[i-1]!='\\'){
-                        res.insert(i,1,'\\');
-                        i++;
-                    }else if(res[i]=='\''&&i!=0&&res[i-1]!='\''){
-                        res.insert(i,1,'\'');
-                        i++;
-                    }else if(res[i]=='\\'&&i!=0&&res[i-1]!='\\'){
-                        res.insert(i,1,'\\');
+                long int i = 0;
+                long int size = res.size();
+                while (i < size)
+                {
+                    if (res[i] == '\"' && i != 0 && res[i - 1] != '\\')
+                    {
+                        res.insert(i, 1, '\\');
                         i++;
                     }
+                    else if (res[i] == '\'' && i != 0 && res[i - 1] != '\'')
+                    {
+                        res.insert(i, 1, '\'');
+                        i++;
+                    }
+                    else if (res[i] == '\\' && i != 0 && res[i - 1] != '\\')
+                    {
+                        res.insert(i, 1, '\\');
+                        i++;
+                    }
+                    else if (res[i] == '&' && i + 3 <= size - 1 && res[i + 1] == 'l' && res[i + 2] == 't' && res[i + 3] == ';')
+                    {
+                        res.erase(i, 4);
+                        res.insert(i, "<");
+                    }
+                    else if (res[i] == '&' && i + 3 <= size - 1 && res[i + 1] == 'g' && res[i + 2] == 't' && res[i + 3] == ';')
+                    {
+                        res.erase(i, 4);
+                        res.insert(i, ">");
+                    }
+
                     i++;
+                    size = res.size();
                 }
                 return res;
             }
 
-            std::string parse_escap_char(const std::string& str){
+            std::string parse_escap_char(const std::string &str)
+            {
                 std::string res = str;
                 long int i = 0;
-                long int size=res.size();
-                while(i<size-1){
-                    if(res[i]=='\''&&res[i+1]=='\''){
-                        res.erase(i,1);
-                    }else if(res[i]=='\\'&&res[i+1]=='\"'){
-                        res.erase(i,1);
-                    }else if(res[i]=='\\'&&res[i+1]=='\\'){
-                        res.erase(i,1);
+                long int size = res.size();
+                while (i < size)
+                {
+                    if (res[i] == '\'' && i < size - 1 && res[i + 1] == '\'')
+                    {
+                        res.erase(i, 1);
                     }
-                    size=res.size();
+                    else if (res[i] == '\\' && i < size - 1 && res[i + 1] == '\"')
+                    {
+                        res.erase(i, 1);
+                    }
+                    else if (res[i] == '\\' && i < size - 1 && res[i + 1] == '\\')
+                    {
+                        res.erase(i, 1);
+                    }
+                    else if (res[i] == '<')
+                    {                    //&lt;
+                        res.erase(i, 1); // delete <
+                        res.insert(i, "&lt;");
+                        i += 3;
+                    }
+                    else if (res[i] == '>')
+                    {                    //&gt;
+                        res.erase(i, 1); // delete <
+                        res.insert(i, "&gt;");
+                        i += 3;
+                    }
+                    size = res.size();
                     i++;
                 }
                 return res;

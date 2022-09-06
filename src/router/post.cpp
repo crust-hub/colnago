@@ -45,13 +45,18 @@ namespace colnago
             void POST(const std::shared_ptr<restbed::Session> session)
             {
                 const auto request = session->get_request();
-                int content_length = stoi(request->get_header("Content-Length", "0"));
+                long long int content_length = stoll(request->get_header("Content-Length", "0"));
                 std::pair<bool, std::string> res;
                 session->fetch(content_length, [&res](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
                                {
-                                   colnago::dao::Post postObj;
-                                   postObj.parse(string(body.begin(), body.end()));
-                                   res = colnago::server::server.postDao->INSERT(postObj); });
+                                // std::cout << body.size() << std::endl;
+                                // if(body.size()>485918){//maxsize
+                                //     return;
+                                // }
+                                string m_body(body.begin(), body.end());
+                                colnago::dao::Post postObj;
+                                postObj.parse(string(body.begin(), body.end()));
+                                res=colnago::server::server.postDao->INSERT(postObj); });
                 BaseResponse<> response(res.first, res.second);
                 session->close(restbed::OK, response.stringify(), {{"Content-Type", "application/json"}});
             }
