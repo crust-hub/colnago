@@ -1,4 +1,6 @@
 #include <iostream>
+#include <tuple>
+#include <string>
 #include "router/index.h"
 #include "view/view.h"
 #include "nlohmann/json.hpp"
@@ -6,8 +8,6 @@
 #include "entity/response.h"
 #include "dao/post/post.h"
 #include "view/asset.h"
-#include <tuple>
-#include <string>
 
 using namespace colnago::entity;
 using namespace colnago::dao;

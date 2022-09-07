@@ -1,7 +1,9 @@
 #pragma once
-
 #include <string>
 #include <list>
+#include <utility>
+#include <tuple>
+#include <map>
 #include <nlohmann/json.hpp>
 
 namespace colnago
@@ -17,8 +19,16 @@ namespace colnago
             std::list<T> m_list;
             BaseResponse(bool result = true, std::string message = "");
             BaseResponse(bool result, std::string message, const std::list<T> &t);
+            BaseResponse(std::pair<bool, std::string> m_pair);
+            BaseResponse(std::tuple<bool, std::string, std::list<T>> m_tuple);
             std::string stringify(std::string (*callback)(T &t));
             std::string stringify();
+        };
+
+        class ResponseHeader
+        {
+        public:
+            static const std::multimap<std::string, std::string>& JSON();
         };
     }
 }
@@ -36,6 +46,19 @@ namespace colnago
         template <typename T>
         BaseResponse<T>::BaseResponse(bool result, std::string message, const std::list<T> &t) : result(result), message(message), m_list(t)
         {
+        }
+
+        template <typename T>
+        BaseResponse<T>::BaseResponse(std::pair<bool, std::string> m_pair)
+        {
+            result = m_pair.first;
+            message = m_pair.second;
+        }
+
+        template <typename T>
+        BaseResponse<T>::BaseResponse(std::tuple<bool, std::string, std::list<T>> m_tuple)
+        {
+            *this = BaseResponse<T>(std::get<0>(m_tuple), std::get<1>(m_tuple), std::get<2>(m_tuple));
         }
 
         template <typename T>
