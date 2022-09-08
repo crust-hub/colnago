@@ -1,14 +1,11 @@
-sudo apt update  -y &&
-sudo apt install -y git &&
-sudo apt install -y cmake &&
-sudo apt install -y make &&
-sudo apt install -y curl &&
-sudo apt install -y libcurl4-openssl-dev &&
-sudo apt install -y libboost-all-dev &&
-sudo apt install -y libasio-dev catch &&
-sudo apt install -y librestbed-dev &&
-sudo apt install -y libsqlite3-dev &&
-sudo apt install -y sqlite &&
-sudo apt install -y python3.8 &&
+apt update  -y && \
+apt install -y git cmake make curl libcurl4-openssl-dev libboost-all-dev libasio-dev catch libsqlite3-dev sqlite && \
+git clone https://github.com/Corvusoft/restbed.git && \
+cd restbed && \
+cmake . && \
+make && \
+make install && \
+cd distribution && \ 
+cp -r ./include/* /usr/include/ && \
+cp -r ./library/* /usr/lib/ && \
 echo "over"
-
