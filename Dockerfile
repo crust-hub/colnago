@@ -35,8 +35,7 @@ CMD rm -rf *Cache.txt \
     && make -j8
 
 # pm2
-WORKDIR /colnago/bin
-CMD mv colnago /
-WORKDIR /
+WORKDIR /disk/
+CMD mv /colnago/bin/colnago ./
 CMD ./colnago
 
