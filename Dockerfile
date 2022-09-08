@@ -33,9 +33,5 @@ WORKDIR /colnago
 CMD rm -rf *Cache.txt \
     &&cmake . \
     && make -j8
-
-# pm2
-WORKDIR /disk/
-CMD mv /colnago/bin/colnago ./
+CMD cd ./bin
 CMD ./colnago
-
