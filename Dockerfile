@@ -30,9 +30,7 @@ CMD cp -r ./distribution/library/* /usr/lib/
 
 # build project
 WORKDIR /colnago
-CMD rm -rf *Cache.txt \
-    &&cmake . \
-    && make -j8
+CMD cmake . && make
 
 WORKDIR /colnago/bin
 CMD ./colnago
