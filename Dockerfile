@@ -20,6 +20,9 @@ RUN apt install -y \
     nodejs \
     npm
 
+WORKDIR ~
+CMD npm install -g pm2
+
 # installing restbed
 WORKDIR /restbed
 CMD git clone https://github.com/Corvusoft/restbed.git
@@ -38,5 +41,4 @@ CMD rm -rf *Cache.txt \
 
 # pm2
 WORKDIR /colnago/bin
-CMD npm install -g pm2
 CMD pm2 start colnago
