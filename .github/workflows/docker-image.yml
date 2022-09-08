@@ -12,9 +12,7 @@ env:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: checkout
       uses: actions/checkout@v3
@@ -43,3 +41,16 @@ jobs:
       run: |
         docker push ${{ env.TAG }}
         
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: deploy docker image
+      uses: appleboy/ssh-action@v0.0.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.HOST_USERNAME }}
+        password: ${{ secrets.HOST_PASSWORD }}
+# docker rm -f $(docker ps -qa) && docker rmi gaowanlu/colnago && docker pull gaowanlu/colnago && docker run -p 20003:20003 -v /mes/colnago/bin:/colnago/bin  gaowanlu/colnago
+        script: |
+          
