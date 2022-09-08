@@ -51,6 +51,6 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.HOST_USERNAME }}
         password: ${{ secrets.HOST_PASSWORD }}
-# docker rm -f $(docker ps -qa) && docker rmi gaowanlu/colnago && docker pull gaowanlu/colnago && docker run -p 20003:20003 -v /mes/colnago/bin:/colnago/bin  gaowanlu/colnago
+# docker rm -f $(docker ps -qa) && docker rmi -f gaowanlu/colnago && docker pull gaowanlu/colnago && docker run -p 20003:20003 -v /mes/colnago/bin:/colnago/bin  gaowanlu/colnago
         script: |
           
