@@ -3,6 +3,7 @@ RUN mkdir -p /colnago
 WORKDIR /colnago
 COPY . /colnago/
 
+# env prepare
 RUN apt update -y
 RUN apt install -y \
     cmake \
@@ -15,11 +16,27 @@ RUN apt install -y \
     catch \
     libsqlite3-dev \ 
     sqlite \
-    librestbed-dev
+    git \
+    nodejs \
+    npm
 
+# installing restbed
+WORKDIR /restbed
+CMD git clone https://github.com/Corvusoft/restbed.git
+WORKDIR /restbed/restbed
+CMD cmake . && \
+    make && \
+    make install
+CMD cp -r ./distribution/include/* /usr/include/
+CMD cp -r ./distribution/library/* /usr/lib/
+
+# build project
 WORKDIR /colnago
-CMD rm -rf CMakeCache.txt \
+CMD rm -rf *Cache.txt \
     &&cmake . \
-    && make -j8 \
-    && cd bin \
-    && ./colnago \
+    && make -j8
+
+# pm2
+WORKDIR /colnago/bin
+CMD npm install -g pm2
+CMD pm2 start colnago
