@@ -16,12 +16,7 @@ RUN apt install -y \
     catch \
     libsqlite3-dev \ 
     sqlite \
-    git \
-    nodejs \
-    npm
-
-WORKDIR ~
-CMD npm install -g pm2
+    git 
 
 # installing restbed
 WORKDIR /restbed
@@ -41,4 +36,7 @@ CMD rm -rf *Cache.txt \
 
 # pm2
 WORKDIR /colnago/bin
-CMD pm2 start colnago
+CMD mv colnago /
+WORKDIR /
+CMD ./colnago
+
