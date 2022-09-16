@@ -235,40 +235,10 @@
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-        },
-        put(post) {
-            fetch('/post/' + post.id, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(post),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        },
-        delete(post) {
-            fetch('/post/' + post.id, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
         }
     };
     let buttons = [];
-    ["POST", "PUT", "DELETE"].forEach(item => {
+    ["POST"].forEach(item => {
         buttons.push(document.getElementById("submit_" + item));
     });
 
