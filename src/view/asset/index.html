@@ -11,16 +11,17 @@
             border: 0px;
             margin: 0px;
             padding: 0px;
-            --color-bg: rgb(32, 32, 32);
+            --color-bg: rgb(107, 214, 228);
         }
 
-        a{
+        a {
             text-decoration: none;
-            color:blueviolet;
+            color: #0066cc;
         }
 
         header {
             background-color: var(--color-bg);
+            background-image: linear-gradient(120deg, #96e6a1 0%, #d4fc79 100%);
             height: 3rem;
             border-bottom: #d2d4d4 1px solid;
         }
@@ -105,12 +106,13 @@
         }
 
         .Card ul {
-            padding: 0.5rem;
             border-radius: 0.5rem;
         }
 
         .Card ul li {
             border-bottom: 1px rgb(113, 113, 121) solid;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
 
         .Card h2 {
@@ -147,87 +149,91 @@
             color: aliceblue;
         }
 
-        .change_box{
-            display:flex;
+        .change_box {
+            display: flex;
+            margin-top: 0.5rem;
             justify-content: space-evenly;
         }
 
-        .resize-vertical{
-            resize: vertical;
+        .resize-vertical {
+            resize: none;
+            overflow: hidden;
         }
 
-        li textarea{
+        li textarea {
             width: 100%;
             outline: none;
             min-height: 10rem;
             word-wrap: break-word;
-            font-size: 1rem;
-            padding: 0.5rem;
+            font-size: 1.2rem;
             box-sizing: border-box;
         }
 
+        li p {
+            text-align: right;
+        }
     </style>
 
 </head>
 
 <body>
     <header>
-        <p>WriterHub</p>
+        <a href="/">
+            <p>WriterHub</p>
+        </a>
     </header>
     <main>
         <div class="content">
             <div class="box">
                 <p>
-                    <em>WriterHub</em> 是一个开放的文字记录平台，你可以在此分享一段你喜欢的话、一篇日记、或者令你开心的事，我们的宗旨是自由开放。
+                    <em>WriterHub</em> open blog platform
                 </p>
 
                 <div class="Card">
-                    <h2>记录世界</h2>
-                    <p>来自游客内容分享</p>
+                    <h2>blog world</h2>
+                    <p>tour sharing from visitors</p>
                     <ul class="GET">
                         {% for post in list %}
                         <li>
                             <textarea readonly class="resize-vertical">
-ID: {{ post.id }}
-
+{{ post.date }}
 {{ post.text }}
-
-DATE: {{ post.date }}
                             </textarea>
+                            <p><a href="/detail/{{ post.id }}">visiting detail</a></p>
                         </li>
                         {% endfor %}
                     </ul>
                     <script>
-                        let search=window.location.search;
-                        if(search.length>0&&search[0]=='?'){
-                            search=search.substr(1,search.length-1);
+                        let search = window.location.search;
+                        if (search.length > 0 && search[0] == '?') {
+                            search = search.substr(1, search.length - 1);
                         }
-                        search=search.split("&&");
-                        let map=new Map();
-                        search.forEach((v,i)=>{
-                            let pair=v.split("=");
-                            map.set(pair[0],pair[1]);
+                        search = search.split("&&");
+                        let map = new Map();
+                        search.forEach((v, i) => {
+                            let pair = v.split("=");
+                            map.set(pair[0], pair[1]);
                         });
                         console.log(map);
-                        let page=0;
-                        if(map.has("page")){
-                            const n=Number(map.get("page"));
-                            page=n<=0?1:n;
+                        let page = 1;
+                        if (map.has("page")) {
+                            const n = Number(map.get("page"));
+                            page = n <= 0 ? 1 : n;
                         }
                         document.write(`<div class="change_box">
-                                            <a href="/?page=${page-1}">上一页</a>
+                                            <a href="/?page=${page-1}">before</a>
                                             ${page} 
-                                            <a href="/?page=${page+1}">下一页</a>
+                                            <a href="/?page=${page+1}">after</a>
                                         </div>`);
                     </script>
                 </div>
                 <div class="Card">
-                    <h2>分享你想说的</h2>
-                    <p>分享自己的内容到广播世界</p>
+                    <h2>talk about your stroy</h2>
+                    <p>share it to the world</p>
                     <form id="form_POST">
-                        <p>文字内容</p>
-                        <textarea placeholder="你想说的话"></textarea><br />
-                        <button type="submit" id="submit_POST">发布</button>
+                        <p>text content</p>
+                        <textarea placeholder="text content"></textarea><br />
+                        <button type="submit" id="submit_POST">submit</button>
                     </form>
                 </div>
             </div>

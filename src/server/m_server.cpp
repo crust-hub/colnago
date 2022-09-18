@@ -7,6 +7,7 @@ namespace colnago
         {
             //数据库配置
             db = ColnagoDB::create("/disk/colnago.db");
+            // db = ColnagoDB::create("./colnago.db");
             postDao = std::make_shared<PostDao>(db->db);
 
             // 创建服务
@@ -28,6 +29,7 @@ namespace colnago
         {
             service->publish(colnago::router::post::resource());
             service->publish(colnago::router::index::resource());
+            service->publish(colnago::router::detail::resource());
         }
 
         Server server;
