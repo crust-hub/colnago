@@ -117,7 +117,7 @@
             margin-bottom: 1rem;
         }
 
-        .Card textarea {
+        .Card form textarea {
             height: auto;
             min-height: 8rem;
             background-color: rgb(245, 245, 245);
@@ -151,6 +151,21 @@
             display:flex;
             justify-content: space-evenly;
         }
+
+        .resize-vertical{
+            resize: vertical;
+        }
+
+        li textarea{
+            width: 100%;
+            outline: none;
+            min-height: 10rem;
+            word-wrap: break-word;
+            font-size: 1rem;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+
     </style>
 
 </head>
@@ -172,7 +187,13 @@
                     <ul class="GET">
                         {% for post in list %}
                         <li>
-                            <p>{{ post.id }} {{ post.text }} {{ post.date }}</p>
+                            <textarea readonly class="resize-vertical">
+ID: {{ post.id }}
+
+{{ post.text }}
+
+DATE: {{ post.date }}
+                            </textarea>
                         </li>
                         {% endfor %}
                     </ul>
