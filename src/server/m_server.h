@@ -3,7 +3,6 @@
 #include "dao/dao_api.h"
 #include "dao/init_db/init_db.h"
 #include "dao/post/post.h"
-#include "request/request_tool.h"
 #include "router/router.h"
 
 namespace colnago

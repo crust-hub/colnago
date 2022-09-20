@@ -1,4 +1,4 @@
 #pragma once
-#include "router/post.h"
-#include "router/index.h"
-#include "router/detail.h"
+#include "router/dynamic/post.h"
+#include "router/dynamic/index.h"
+#include "router/dynamic/detail.h"
