@@ -35,6 +35,7 @@ namespace colnago
             service->publish(colnago::router::post::resource());
             service->publish(colnago::router::index::resource());
             service->publish(colnago::router::detail::resource());
+            service->publish(colnago::router::image::resource());
             service->set_not_found_handler(colnago::router::other::static_router::default_event);
         }
 
