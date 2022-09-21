@@ -26,7 +26,7 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
         content_type.erase(i, strlen("multipart/form-data;"));
     }
 
-    i = content_type.find_first_not_of(' '); //去空格
+    i = content_type.find_first_not_of(' '); 
     if (i != string::npos)
     {
         content_type.erase(0, i);
@@ -71,11 +71,10 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
 //         }
 
 //         int headers_count = 0, bodys_count = 0;
-//         //解析内容每个part
+
 //         for (size_t i = 0; i < parts.size(); i++)
 //         {
 //             stringstream part(parts[i]);
-//             //解析头部部分
 //             string line;
 //             // vector<string> header_lines;
 //             while (part.good())
@@ -90,7 +89,7 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
 //             headers_count++;
 
 //             // stringstream body;
-//             while (part.good()) //收录body部分
+//             while (part.good()) 
 //             {
 //                 getline(part, line);
 //                 if (part.good())
@@ -120,3 +119,5 @@ std::shared_ptr<restbed::Resource> image::resource()
     resource->set_method_handler("POST", POST);
     return resource;
 }
+
+
