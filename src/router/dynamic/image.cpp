@@ -41,72 +41,71 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
     string slice_line = string("--") + content_type + "\r";
     string end_line = string("--") + content_type + "--\r";
 
-    //算法待优化，不应该使用内存消耗，优化为行数记录策略
     auto handler = [slice_line, end_line, content_type](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
     {
-        istringstream body_stream(string(body.begin(), body.end()));
-        string line;
-        vector<string> parts;
-        stringstream temp;
-        bool skiped = false;
+//         istringstream body_stream(string(body.begin(), body.end()));
+//         string line;
+//         vector<string> parts;
+//         stringstream temp;
+//         bool skiped = false;
 
-        while (body_stream.good())
-        {
-            getline(body_stream, line);
-            if (line == slice_line || line == end_line)
-            {
-                if (skiped == false)
-                {
-                    skiped = true;
-                    continue;
-                }
-                parts.push_back(temp.str());
-                temp.clear();
-                temp.str("");
-            }
-            else
-            {
-                line = line + "\n";
-                temp << line;
-            }
-        }
+//         while (body_stream.good())
+//         {
+//             getline(body_stream, line);
+//             if (line == slice_line || line == end_line)
+//             {
+//                 if (skiped == false)
+//                 {
+//                     skiped = true;
+//                     continue;
+//                 }
+//                 parts.push_back(temp.str());
+//                 temp.clear();
+//                 temp.str("");
+//             }
+//             else
+//             {
+//                 line = line + "\n";
+//                 temp << line;
+//             }
+//         }
 
-        int headers_count = 0, bodys_count = 0;
-        //解析内容每个part
-        for (size_t i = 0; i < parts.size(); i++)
-        {
-            stringstream part(parts[i]);
-            //解析头部部分
-            string line;
-            // vector<string> header_lines;
-            while (part.good())
-            {
-                getline(part, line);
-                if (line == "\r")
-                {
-                    break;
-                }
-                // header_lines.push_back(line);
-            }
-            headers_count++;
+//         int headers_count = 0, bodys_count = 0;
+//         //解析内容每个part
+//         for (size_t i = 0; i < parts.size(); i++)
+//         {
+//             stringstream part(parts[i]);
+//             //解析头部部分
+//             string line;
+//             // vector<string> header_lines;
+//             while (part.good())
+//             {
+//                 getline(part, line);
+//                 if (line == "\r")
+//                 {
+//                     break;
+//                 }
+//                 // header_lines.push_back(line);
+//             }
+//             headers_count++;
 
-            // stringstream body;
-            while (part.good()) //收录body部分
-            {
-                getline(part, line);
-                if (part.good())
-                {
-                    // body << line << "\n";
-                }
-                else
-                {
-                    // body << line;
-                }
-            }
-            bodys_count++;
-        }
+//             // stringstream body;
+//             while (part.good()) //收录body部分
+//             {
+//                 getline(part, line);
+//                 if (part.good())
+//                 {
+//                     // body << line << "\n";
+//                 }
+//                 else
+//                 {
+//                     // body << line;
+//                 }
+//             }
+//             bodys_count++;
+//         }
 
-        cout << headers_count << " " << bodys_count << endl;
+//         cout << headers_count << " " << bodys_count << endl;
 
         session->close(restbed::OK, "post success", {{"Content-Type", "text/text"}});
     };
