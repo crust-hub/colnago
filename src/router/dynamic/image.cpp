@@ -24,7 +24,6 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
     auto lines = multipart_form_data_parser::boundary(content_type);
     const string slice_line = lines.first;
     const string end_line = lines.second;
-
     auto handler = [slice_line, end_line, content_type](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
     {
         if (body.size() > 118207938)
@@ -50,7 +49,6 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
                 }
             }
         }
-
         session->close(restbed::OK, "post success", {{"Content-Type", "text/text"}});
     };
     session->fetch(content_length, handler);

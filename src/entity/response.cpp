@@ -22,8 +22,7 @@ const multimap<string, string> &ResponseHeader::Base(ResponseHeader::type t)
     }
     if (res == nullptr)
     {
-        const multimap<string, string> m_map = {{"Content-Type", type},
-                                                {"Connection", "keep-alive"}};
+        const multimap<string, string> m_map = {{"Content-Type", type}};
         res = make_shared<multimap<string, string>>(m_map);
     }
     return *res.get();
