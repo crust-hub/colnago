@@ -4,10 +4,12 @@
 #include <vector>
 #include "router/dynamic/image.h"
 #include "entity/response.h"
+#include "utils/multipart_form_data_parser.h"
 
 using namespace colnago::router;
 using namespace std;
 using namespace colnago::entity;
+using namespace colnago::utils;
 
 /**
  * @brief POST /image
@@ -19,94 +21,35 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
     const auto request = session->get_request();
     long long int content_length = stoll(request->get_header("Content-Length", "0"));
     string content_type = request->get_header("Content-Type");
-    size_t i = content_type.find("multipart/form-data;");
+    auto lines = multipart_form_data_parser::boundary(content_type);
+    const string slice_line = lines.first;
+    const string end_line = lines.second;
 
-    if (i == 0)
-    {
-        content_type.erase(i, strlen("multipart/form-data;"));
-    }
-
-    i = content_type.find_first_not_of(' '); //去空格
-    if (i != string::npos)
-    {
-        content_type.erase(0, i);
-    }
-
-    i = content_type.find_first_of("boundary=");
-    if (i == 0)
-    {
-        content_type.erase(i, strlen("boundary="));
-    }
-
-    string slice_line = string("--") + content_type + "\r";
-    string end_line = string("--") + content_type + "--\r";
-
-    //算法待优化，不应该使用内存消耗，优化为行数记录策略
     auto handler = [slice_line, end_line, content_type](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
     {
+        if (body.size() > 118207938)
+        {
+            session->close(restbed::NOT_FOUND, "oversize", {{"Content-Type", "text/text"}});
+            return;
+        }
+
         istringstream body_stream(string(body.begin(), body.end()));
-        string line;
-        vector<string> parts;
-        stringstream temp;
-        bool skiped = false;
+        auto form_data = multipart_form_data_parser::parser(body_stream, slice_line, end_line);
 
-        while (body_stream.good())
+        for (size_t i = 0; i < form_data.first.size(); i++)
         {
-            getline(body_stream, line);
-            if (line == slice_line || line == end_line)
+            auto &header = form_data.first[i];
+            if (header.find("Content-Type") != header.end())
             {
-                if (skiped == false)
+                cout << header.at("Content-Type") << endl;
+                cout << "size: " << form_data.second[i].size() << endl;
+                if (header.at("Content-Type") == "image/jpeg\r" || header.at("Content-Type") == "image/png\r")
                 {
-                    skiped = true;
-                    continue;
+                    session->close(restbed::OK, form_data.second[i], {{"Content-Type", header.at("Content-Type")}});
+                    return;
                 }
-                parts.push_back(temp.str());
-                temp.clear();
-                temp.str("");
-            }
-            else
-            {
-                line = line + "\n";
-                temp << line;
             }
         }
-
-        int headers_count = 0, bodys_count = 0;
-        //解析内容每个part
-        for (size_t i = 0; i < parts.size(); i++)
-        {
-            stringstream part(parts[i]);
-            //解析头部部分
-            string line;
-            // vector<string> header_lines;
-            while (part.good())
-            {
-                getline(part, line);
-                if (line == "\r")
-                {
-                    break;
-                }
-                // header_lines.push_back(line);
-            }
-            headers_count++;
-
-            // stringstream body;
-            while (part.good()) //收录body部分
-            {
-                getline(part, line);
-                if (part.good())
-                {
-                    // body << line << "\n";
-                }
-                else
-                {
-                    // body << line;
-                }
-            }
-            bodys_count++;
-        }
-
-        cout << headers_count << " " << bodys_count << endl;
 
         session->close(restbed::OK, "post success", {{"Content-Type", "text/text"}});
     };
