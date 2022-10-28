@@ -13,7 +13,7 @@ std::pair<vector<std::map<string, string>>, std::vector<std::string>> multipart_
     stringstream temp;
     bool skiped = false;
 
-    while (body_stream.good())
+    while (body_stream.good()) //按行读取
     {
         getline(body_stream, line);
         if (line == slice_line || line == end_line)
@@ -51,7 +51,11 @@ std::pair<vector<std::map<string, string>>, std::vector<std::string>> multipart_
         while (part.good())
         {
             getline(part, line);
-            if (line == "\r")
+            if (line.length() > 0 && line[line.length() - 1] == '\r')
+            {
+                line.erase(--line.end()); //删除末尾\r
+            }
+            if (line == "")
             {
                 break;
             }

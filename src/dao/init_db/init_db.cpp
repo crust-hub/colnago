@@ -25,10 +25,15 @@ namespace colnago
 
         void ColnagoDB::init()
         {
-            const char *sql = "CREATE TABLE post("
+            const char *sql = "CREATE TABLE IF NOT EXISTS post("
                               "ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                               "TEXT MEMO NOT NULL,"
-                              "DATE DATETIME NOT NULL);";
+                              "DATE DATETIME NOT NULL);"
+                              "CREATE TABLE  IF NOT EXISTS image("
+                              "ID VARCHAR(32) PRIMARY KEY NOT NULL,"
+                              "DATA BLOB NOT NULL,"
+                              "TYPE VARCHAR(32) NOT NULL"
+                              ");";
             // execute sql
             char *zErrMsg = nullptr;
             int rc = sqlite3_exec(db, sql, nullptr, 0, &zErrMsg);

@@ -10,7 +10,7 @@ namespace colnago
 {
     namespace entity
     {
-        template <typename T = char>
+        template <typename T = std::string>
         class BaseResponse
         {
         public:

@@ -8,8 +8,8 @@ namespace colnago
         void Server::start()
         {
             //数据库配置
-            db = ColnagoDB::create("/disk/colnago.db");
-            // db = ColnagoDB::create("./colnago.db");
+            // db = ColnagoDB::create("/disk/colnago.db");
+            db = ColnagoDB::create("./colnago.db");
             postDao = std::make_shared<PostDao>(db->db);
 
             // 创建服务
