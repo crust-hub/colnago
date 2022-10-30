@@ -1,4 +1,5 @@
-./*/*.sql
-./*/*odb.cxx
-./*/*odb.hxx
-./*/*odb.ixx
+*.sql
+*odb.cxx
+*odb.hxx
+*odb.ixx
+
