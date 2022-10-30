@@ -5,7 +5,7 @@ namespace colnago
 {
     namespace router
     {
-        namespace index
+        namespace IndexController
         {
             void GET(const std::shared_ptr<restbed::Session> session);
             std::shared_ptr<restbed::Resource> resource();

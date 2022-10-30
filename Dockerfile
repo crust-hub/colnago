@@ -14,9 +14,9 @@ RUN apt install -y \
     libboost-all-dev \
     libasio-dev \
     catch \
-    libsqlite3-dev \ 
-    sqlite \
-    git 
+    git  \
+    odb \
+    mysql-client 
 
 # installing restbed
 WORKDIR /restbed

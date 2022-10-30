@@ -6,7 +6,7 @@ namespace colnago
 {
     namespace router
     {
-        namespace image
+        namespace ImageController
         {
             void POST(const std::shared_ptr<restbed::Session> session);
             void GET(const std::shared_ptr<restbed::Session> session);

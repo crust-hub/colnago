@@ -1,5 +1,5 @@
 apt update  -y && \
-apt install -y git cmake make curl libcurl4-openssl-dev libboost-all-dev libasio-dev catch libsqlite3-dev sqlite && \
+apt install -y git cmake make curl libcurl4-openssl-dev libboost-all-dev libasio-dev odb catch mysql-client && \
 git clone https://github.com/Corvusoft/restbed.git && \
 cd restbed && \
 cmake . && \

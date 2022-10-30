@@ -6,7 +6,7 @@ namespace colnago
 {
     namespace router
     {
-        namespace post
+        namespace PostController
         {
             void GET(const std::shared_ptr<restbed::Session> session);
             void DELETE(const std::shared_ptr<restbed::Session> session);

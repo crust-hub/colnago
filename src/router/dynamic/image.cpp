@@ -3,14 +3,17 @@
 #include <iostream>
 #include <vector>
 #include <regex>
-#include <sqlite3.h>
 #include <chrono>
+#include <odb/mysql/exceptions.hxx>
 #include "router/dynamic/image.h"
 #include "entity/response.h"
 #include "utils/multipart_form_data_parser.h"
-#include "server/m_server.h"
+#include "server/server.h"
+#include "dao/image/image-odb.hxx"
+#include "dao/image/image-odb.ixx"
+#include "dao/image/image.h"
+#include "dao/db.h"
 
-using namespace colnago::router;
 using namespace std;
 using namespace colnago::entity;
 using namespace colnago::utils;
@@ -22,7 +25,7 @@ static const regex image_regex(string("image/.*"));
  *
  * @param session
  */
-void image::POST(const std::shared_ptr<restbed::Session> session)
+void colnago::router::ImageController::POST(const std::shared_ptr<restbed::Session> session)
 {
     const auto request = session->get_request();
     long long int content_length = stoll(request->get_header("Content-Length", "0"));
@@ -30,9 +33,10 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
     auto lines = multipart_form_data_parser::boundary(content_type);
     const string slice_line = lines.first;
     const string end_line = lines.second;
+    static constexpr size_t max_size = 1024 * 1024 * 3;
     auto handler = [slice_line, end_line, content_type](const std::shared_ptr<restbed::Session> session, const restbed::Bytes &body) -> void
     {
-        if (body.size() > 118207938)
+        if (body.size() > max_size) // 3MB
         {
             session->close(restbed::NOT_FOUND, "oversize", {{"Content-Type", "text/text"}});
             return;
@@ -54,22 +58,25 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
                 auto const &content_type = header.at("Content-Type");
                 if (regex_match(content_type, image_regex)) //是图片
                 {
-                    sqlite3_stmt *stmt; //声明
+                    vector<char> buffer(form_data.second[i].begin(), form_data.second[i].end());
                     chrono::steady_clock::time_point time1 = chrono::steady_clock::now();
-                    const string id = to_string(time1.time_since_epoch().count());
-                    const string sql = "insert into image(ID,DATA,TYPE) values(?,?,?)";
-                    sqlite3_prepare(colnago::server::server.db->db, sql.c_str(), sql.length(), &stmt, 0);
+                    Image image(time1.time_since_epoch().count(), buffer, content_type);
+                    long long id = -1;
+                    string message = "";
+                    odb::transaction t(db::db->begin());
+                    try
                     {
-                        sqlite3_bind_text(stmt, 1, id.c_str(), id.length(), SQLITE_TRANSIENT);
-                        sqlite3_bind_text(stmt, 3, content_type.c_str(), content_type.length(), SQLITE_TRANSIENT);
-                        sqlite3_bind_blob(stmt, 2, form_data.second[i].c_str(), form_data.second[i].length(), SQLITE_TRANSIENT);
-                        sqlite3_step(stmt);
-                        sqlite3_finalize(stmt);
+                        id = db::db->persist(image); //存储图片数据
                     }
+                    catch (odb::mysql::database_exception &e)
+                    {
+                        message = e.what();
+                    }
+                    t.commit();
                     BaseResponse<string> base_response;
-                    base_response.message = "插入成功";
-                    base_response.result = true;
-                    base_response.m_list.push_back(id);
+                    base_response.message = message;
+                    base_response.result = (id > 0);
+                    base_response.m_list.push_back(to_string(id));
                     string json_res = base_response.stringify([](string &item) -> string
                                                               { return item; });
                     session->close(restbed::OK, json_res, ResponseHeader::Base(ResponseHeader::JSON));
@@ -87,42 +94,38 @@ void image::POST(const std::shared_ptr<restbed::Session> session)
  *
  * @param session
  */
-void image::GET(const std::shared_ptr<restbed::Session> session)
+void colnago::router::ImageController::GET(const std::shared_ptr<restbed::Session> session)
 {
     const auto request = session->get_request();
     const string id = request->get_query_parameter("id");
-    sqlite3_stmt *stmt; //声明
-    const string sql = "select * from image where ID =?;";
-    sqlite3_prepare(colnago::server::server.db->db, sql.c_str(), sql.length(), &stmt, 0);
+    Image image;
+    odb::query<Image> query(odb::query<Image>::id == stoll(id));
+    odb::transaction t(db::db->begin());
+    odb::result<Image> res = db::db->query(query);
+    if (res.empty())
     {
-        sqlite3_bind_text(stmt, 1, id.c_str(), -1, SQLITE_TRANSIENT);
-    }
-    int result = sqlite3_step(stmt);
-    if (result == SQLITE_ROW)
-    {
-        const char *type = (char *)sqlite3_column_blob(stmt, 2);
-        const char *data = (char *)sqlite3_column_blob(stmt, 1);
-        restbed::Bytes bytes;
-        size_t len = sqlite3_column_bytes(stmt, 1); //返回数据大小
-        for (size_t i = 0; i < len; i++)
-        {
-            bytes.push_back(data[i]);
-        }
-        const string str_type(type);
-        session->close(restbed::OK, bytes, {{"Content-Type", str_type}, {"Content-Length", to_string(len)}});
-        sqlite3_finalize(stmt);
+        session->close(restbed::NOT_FOUND);
+        t.commit();
         return;
     }
-    sqlite3_finalize(stmt); //把刚才分配的内容析构掉
-    session->close(restbed::NOT_FOUND);
+    restbed::Bytes back;
+    const vector<char> &data = res.begin()->data();
+    for (auto &item : data)
+    {
+        back.push_back(item);
+    }
+    session->close(restbed::OK,
+                   back, {{"Content-Type", res.begin()->type()}, {"Content-Length", to_string(res.begin()->data().size())}});
+    t.commit();
+    return;
 }
 
-std::shared_ptr<restbed::Resource> image::resource()
+std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource()
 {
     const char *postRestFul = "/image";
     auto resource = make_shared<restbed::Resource>();
     resource->set_path(postRestFul);
-    resource->set_method_handler("POST", POST);
-    resource->set_method_handler("GET", GET);
+    resource->set_method_handler("POST", ImageController::POST);
+    resource->set_method_handler("GET", ImageController::GET);
     return resource;
 }
