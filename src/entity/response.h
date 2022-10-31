@@ -30,7 +30,7 @@ namespace colnago
         public:
             enum type
             {
-                JSON,
+                JSON = 0,
                 HTML
             };
             static const std::multimap<std::string, std::string> &Base(type t);
@@ -95,6 +95,10 @@ namespace colnago
             res["result"] = result;
             res["message"] = message;
             json array = json::array();
+            for (auto &item : m_list)
+            {
+                array.push_back(item);
+            }
             res["list"] = array;
             return res.dump();
         }

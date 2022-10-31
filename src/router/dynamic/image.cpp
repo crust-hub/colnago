@@ -4,6 +4,7 @@
 #include <vector>
 #include <regex>
 #include <chrono>
+#include <nlohmann/json.hpp>
 #include <odb/mysql/exceptions.hxx>
 #include "router/dynamic/image.h"
 #include "entity/response.h"
@@ -19,6 +20,7 @@ using namespace std;
 using namespace colnago::entity;
 using namespace colnago::utils;
 using namespace colnago::service;
+using namespace colnago::db;
 
 static const regex image_regex(string("image/.*"));
 
@@ -125,8 +127,26 @@ void colnago::router::ImageController::GET(const std::shared_ptr<restbed::Sessio
  *
  * @param session
  */
-void GET_LIST(const std::shared_ptr<restbed::Session> session)
+void colnago::router::ImageController::GET_LIST(const std::shared_ptr<restbed::Session> session)
 {
+    const auto request = session->get_request();
+    auto page_str = request->get_query_parameter("page");
+    long long int page = 1;
+    if (page_str != "")
+    {
+        page = stoll(page_str);
+    }
+    odb::transaction t(db::db->begin());
+    auto res_list = Service<Image>::page(odb::query<Image>::id.is_not_null(), 10, page);
+    t.commit();
+    BaseResponse<Image> base_response(true, "检索成功", *res_list);
+    auto res = base_response.stringify([](Image &image) -> std::string
+                                       { 
+                                        json j = json::parse(R"({"url":""})");
+                                        j["url"] = string("/image?id=") + to_string(image.id());
+                                        return j.dump(); });
+    session->close(restbed::OK, res, ResponseHeader::Base(ResponseHeader::JSON));
+    return;
 }
 
 std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource(std::shared_ptr<restbed::Service> service)
@@ -136,6 +156,10 @@ std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource(st
     resource->set_path(postRestFul);
     resource->set_method_handler("POST", ImageController::POST);
     resource->set_method_handler("GET", ImageController::GET);
+    auto resource_list = make_shared<restbed::Resource>();
+    resource_list->set_path("/image/list");
+    resource_list->set_method_handler("GET", ImageController::GET_LIST);
     service->publish(resource);
+    service->publish(resource_list);
     return resource;
 }

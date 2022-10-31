@@ -97,6 +97,7 @@
             border-radius: 0.5rem;
             position: relative;
             box-shadow: #9b9b9b 0px 0px 5px;
+            min-width: 10rem;
         }
 
         .Card p {
@@ -181,7 +182,16 @@
         .poster{
             width: 20%;
             border-radius: 1rem;
-            max-width: 10rem;
+            max-width: 14rem;
+            min-width: 8rem;
+            margin: 0.2rem;
+            box-sizing: border-box;
+        }
+
+        .ImgContainer{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
 
     </style>
@@ -245,7 +255,7 @@
                         <button type="submit" id="submit_POST">submit</button>
                     </form>
                 </div>
-                <div class="Card">
+                <div class="Card ImgContainer" id="imgCard">
                     <img class="poster" src="/image?id=4" alt=""/>
                 </div>
             </div>
@@ -292,6 +302,22 @@
         };
         Post.post(post);
     }
+
+    fetch("/image/list?page=1",{
+        method:"GET"
+    }).then(res=>{
+        return res.json();
+    }).then(data=>{
+        let card=document.getElementById("imgCard");
+        for(let item of data.list){
+            let img=document.createElement("img");
+            img.classList.add("poster");
+            img.src=item.url;
+            card.appendChild(img);
+        }
+        console.log(data);
+    });
+
 </script>
 
 </html>
