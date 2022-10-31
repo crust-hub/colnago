@@ -5,7 +5,7 @@
 #include <odb/core.hxx>
 
 typedef std::vector<char> buffer;
-#pragma db value(buffer) type("BLOB")
+#pragma db value(buffer) type("MEDIUMBLOB")
 
 #pragma db object table("image")
 class Image
