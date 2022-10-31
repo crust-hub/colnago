@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "server/server.h"
 #include "router/other/static_router.h"
 
@@ -14,7 +15,8 @@ namespace colnago
             auto settings = make_shared<restbed::Settings>();
             settings->set_port(20003);
             settings->set_worker_limit(50); //最大线程
-            // settings->set_default_header("Connection", "close"); //默认响应头
+            settings->set_connection_timeout(std::chrono::seconds(10));//10s
+            //settings->set_default_header("Connection", "close"); //默认响应头
 
             std::cout << "start server on 20003 port" << std::endl;
 
@@ -27,10 +29,10 @@ namespace colnago
 
         void Server::router_publish()
         {
-            service->publish(colnago::router::PostController::resource());
-            service->publish(colnago::router::IndexController::resource());
-            service->publish(colnago::router::DetailController::resource());
-            service->publish(colnago::router::ImageController::resource());
+            colnago::router::PostController::resource(service);
+            colnago::router::IndexController::resource(service);
+            colnago::router::DetailController::resource(service);
+            colnago::router::ImageController::resource(service);
             service->set_not_found_handler(colnago::router::other::static_router::default_event);
         }
 

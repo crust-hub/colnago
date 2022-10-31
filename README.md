@@ -21,7 +21,8 @@ sudo ./colnago
 
 ## dependences
 
-[@sqlite](https://github.com/sqlite/sqlite)  
+[@mysql]()  
+[@odb orm]()  
 [@restbed](https://github.com/Corvusoft/restbed)  
 [@json](https://github.com/nlohmann/json)  
 [@libcurl](https://github.com/curl/curl)  

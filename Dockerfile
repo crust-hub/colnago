@@ -16,6 +16,7 @@ RUN apt install -y \
     catch \
     git  \
     odb \
+    libmysqlclient-dev \
     mysql-client 
 
 # installing restbed

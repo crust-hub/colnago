@@ -4,7 +4,7 @@ project(colnago)
 add_definitions(-w)
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -O2")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -Wall -O2")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++14 -Wall -O2")
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/)
 include_directories(${PROJECT_SOURCE_DIR}/include)

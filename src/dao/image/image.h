@@ -5,7 +5,7 @@
 #include <odb/core.hxx>
 
 typedef std::vector<char> buffer;
-#pragma db value(buffer) type("BLOB")
+#pragma db value(buffer) type("MEDIUMBLOB")
 
 #pragma db object table("image")
 class Image
@@ -25,4 +25,6 @@ private:
     buffer data_;
     std::string type_;
 };
+
 // odb -d mysql --generate-query --generate-schema image.h
+
