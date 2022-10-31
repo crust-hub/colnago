@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "server/server.h"
 #include "router/other/static_router.h"
 
@@ -14,7 +15,8 @@ namespace colnago
             auto settings = make_shared<restbed::Settings>();
             settings->set_port(20003);
             settings->set_worker_limit(50); //最大线程
-            // settings->set_default_header("Connection", "close"); //默认响应头
+            settings->set_connection_timeout(std::chrono::seconds(10));//10s
+            settings->set_default_header("Connection", "close"); //默认响应头
 
             std::cout << "start server on 20003 port" << std::endl;
 
