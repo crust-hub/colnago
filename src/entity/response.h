@@ -94,6 +94,8 @@ namespace colnago
                 })"_json;
             res["result"] = result;
             res["message"] = message;
+            json array = json::array();
+            res["list"] = array;
             return res.dump();
         }
     }

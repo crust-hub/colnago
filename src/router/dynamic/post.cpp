@@ -7,9 +7,11 @@
 #include "dao/post/post.h"
 #include "entity/response.h"
 #include "dao/db.h"
+#include "service/service.h"
 
 using namespace colnago::entity;
 using namespace colnago::db;
+using namespace colnago::service;
 
 namespace colnago
 {
@@ -29,22 +31,12 @@ namespace colnago
             {
                 using namespace std;
                 const auto request = session->get_request();
-                Post post(stoi(request->get_path_parameter("id")), "", "");
-                odb::query<Post> query(odb::query<Post>::id == post.id());
-                std::list<Post> resList;
                 odb::transaction t(db::db->begin());
-                odb::result<Post> res(db::db->query(query));
-                for (auto &item : res)
-                {
-                    resList.push_back(item);
-                }
+                auto resList = Service<Post>::getById(stoi(request->get_path_parameter("id")));
                 t.commit();
-                BaseResponse<Post> base_response(true, "success", resList);
-                auto func = [](Post &item) -> std::string
-                {
-                    return item.to_json();
-                };
-                auto resJson = base_response.stringify(func);
+                BaseResponse<Post> base_response(true, "success", *resList);
+                auto resJson = base_response.stringify([](Post &p) -> string
+                                                       { return p.to_json(); });
                 session->close(restbed::OK, resJson, ResponseHeader::Base(ResponseHeader::JSON));
             }
 
@@ -64,7 +56,7 @@ namespace colnago
                     postObj.parser(string(body.begin(), body.end()));
                     //插入
                     odb::transaction t(db::db->begin());
-                    auto auto_id = db::db->persist(postObj);
+                    auto auto_id = Service<Post>::add(postObj, postObj.id());
                     if (auto_id > 0)
                     {
                         t.commit();
@@ -85,7 +77,7 @@ namespace colnago
                 const auto request = session->get_request();
                 const string id = request->get_path_parameter("id");
                 odb::transaction t(db::db->begin());
-                db::db->erase<Post>(stoll(id));
+                Service<Post>::deleteById(stoll(id));
                 t.commit();
                 BaseResponse<> response(true);
                 session->close(restbed::OK, response.stringify(), ResponseHeader::Base(ResponseHeader::JSON));
@@ -108,7 +100,7 @@ namespace colnago
                     postObj.parser(string(body.begin(), body.end()));
                     // update
                     odb::transaction t(db::db->begin());
-                    db::db->update(postObj);
+                    Service<Post>::update(postObj);
                     t.commit();
                     BaseResponse<> response(true);
                     session->close(restbed::OK, response.stringify(), ResponseHeader::Base(ResponseHeader::JSON));

@@ -13,10 +13,12 @@
 #include "dao/image/image-odb.ixx"
 #include "dao/image/image.h"
 #include "dao/db.h"
+#include "service/service.h"
 
 using namespace std;
 using namespace colnago::entity;
 using namespace colnago::utils;
+using namespace colnago::service;
 
 static const regex image_regex(string("image/.*"));
 
@@ -66,7 +68,7 @@ void colnago::router::ImageController::POST(const std::shared_ptr<restbed::Sessi
                     odb::transaction t(db::db->begin());
                     try
                     {
-                        id = db::db->persist(image); //存储图片数据
+                        id = Service<Image>::add(image, image.id()); //存储图片数据
                     }
                     catch (odb::mysql::database_exception &e)
                     {
@@ -98,26 +100,34 @@ void colnago::router::ImageController::GET(const std::shared_ptr<restbed::Sessio
 {
     const auto request = session->get_request();
     const string id = request->get_query_parameter("id");
-    Image image;
-    odb::query<Image> query(odb::query<Image>::id == stoll(id));
     odb::transaction t(db::db->begin());
-    odb::result<Image> res = db::db->query(query);
-    if (res.empty())
+    auto res = Service<Image>::getById(stoll(id));
+    if (res->empty())
     {
         session->close(restbed::NOT_FOUND);
         t.commit();
         return;
     }
     restbed::Bytes back;
-    const vector<char> &data = res.begin()->data();
+    const vector<char> &data = res->begin()->data();
     for (auto &item : data)
     {
         back.push_back(item);
     }
     session->close(restbed::OK,
-                   back, {{"Content-Type", res.begin()->type()}, {"Content-Length", to_string(res.begin()->data().size())}});
+                   back, {{"Content-Type", res->begin()->type()}, {"Content-Length", to_string(res->begin()->data().size())}});
     t.commit();
     return;
+}
+
+/**
+ * @brief Get the list object
+ * 
+ * @param session 
+ */
+void GET_LIST(const std::shared_ptr<restbed::Session> session)
+{
+    
 }
 
 std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource()

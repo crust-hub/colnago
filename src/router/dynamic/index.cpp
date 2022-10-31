@@ -12,10 +12,12 @@
 #include "dao/post/post.h"
 #include "view/asset.h"
 #include "dao/db.h"
+#include "service/service.h"
 
 using namespace colnago::entity;
 using namespace colnago::view;
 using namespace colnago::db;
+using namespace colnago::service;
 
 namespace colnago
 {
@@ -40,16 +42,10 @@ namespace colnago
                 {
                     page = stoll(page_str);
                 }
-                //查找
-                std::list<Post> res_list;
                 odb::transaction t(db::db->begin());
-                odb::result<Post> all(db::db->query<Post>());
-                for (auto &item : all)
-                {
-                    res_list.push_back(item);
-                }
+                auto res_list = Service<Post>::page(odb::query<Post>::id.is_not_null(), 10, page);
                 t.commit();
-                BaseResponse<Post> base_response(true, "检索成功", res_list);
+                BaseResponse<Post> base_response(true, "检索成功", *res_list);
                 auto res = base_response.stringify([](Post &post) -> std::string
                                                    { return post.to_json(); });
                 std::string response = colnago::view::render(Asset::source("index.html").c_str(), nlohmann::json::parse(res));

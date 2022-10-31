@@ -10,10 +10,12 @@
 #include "dao/post/post.h"
 #include "view/asset.h"
 #include "dao/db.h"
+#include "service/service.h"
 
 using namespace colnago::entity;
 using namespace colnago::db;
 using namespace colnago::view;
+using namespace colnago::service;
 using namespace std;
 
 namespace colnago
@@ -27,16 +29,10 @@ namespace colnago
                 const auto request = session->get_request();
                 auto id_str = request->get_path_parameter("id");
                 auto id = stoll(id_str);
-                odb::query<Post> query(odb::query<Post>::id == id);
-                std::list<Post> resList;
                 odb::transaction t(db::db->begin());
-                odb::result<Post> res(db::db->query(query));
-                for (auto &item : res)
-                {
-                    resList.push_back(item);
-                }
+                auto resList = Service<Post>::getById(id);
                 t.commit();
-                BaseResponse<Post> base_response(true, "success", resList);
+                BaseResponse<Post> base_response(true, "success", *resList);
                 auto func = [](Post &item) -> std::string
                 {
                     return item.to_json();
