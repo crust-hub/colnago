@@ -57,12 +57,13 @@ namespace colnago
                 return;
             }
 
-            std::shared_ptr<restbed::Resource> resource()
+            std::shared_ptr<restbed::Resource> resource(std::shared_ptr<restbed::Service> service)
             {
                 const char *postRestFul = "/";
                 auto resource = make_shared<restbed::Resource>();
                 resource->set_path(postRestFul);
                 resource->set_method_handler("GET", GET);
+                service->publish(resource);
                 return resource;
             }
         }

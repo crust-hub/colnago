@@ -116,7 +116,7 @@ namespace colnago
                 session->fetch(content_length, handler);
             }
 
-            std::shared_ptr<restbed::Resource> resource()
+            std::shared_ptr<restbed::Resource> resource(std::shared_ptr<restbed::Service> service)
             {
                 //路由信息
                 const char *postRestFul = "/post/{id: [0-9]+}";
@@ -126,6 +126,7 @@ namespace colnago
                 resource->set_method_handler("PUT", PUT);
                 resource->set_method_handler("DELETE", DELETE);
                 resource->set_method_handler("POST", POST);
+                service->publish(resource);
                 return resource;
             }
         }

@@ -120,12 +120,13 @@ void colnago::router::ImageController::GET(const std::shared_ptr<restbed::Sessio
     return;
 }
 
-std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource()
+std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource(std::shared_ptr<restbed::Service> service)
 {
     const char *postRestFul = "/image";
     auto resource = make_shared<restbed::Resource>();
     resource->set_path(postRestFul);
     resource->set_method_handler("POST", ImageController::POST);
     resource->set_method_handler("GET", ImageController::GET);
+    service->publish(resource);
     return resource;
 }

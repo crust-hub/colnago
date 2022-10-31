@@ -29,10 +29,10 @@ namespace colnago
 
         void Server::router_publish()
         {
-            service->publish(colnago::router::PostController::resource());
-            service->publish(colnago::router::IndexController::resource());
-            service->publish(colnago::router::DetailController::resource());
-            service->publish(colnago::router::ImageController::resource());
+            colnago::router::PostController::resource(service);
+            colnago::router::IndexController::resource(service);
+            colnago::router::DetailController::resource(service);
+            colnago::router::ImageController::resource(service);
             service->set_not_found_handler(colnago::router::other::static_router::default_event);
         }
 
