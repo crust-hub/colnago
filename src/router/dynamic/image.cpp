@@ -15,12 +15,15 @@
 #include "dao/image/image.h"
 #include "dao/db.h"
 #include "service/service.h"
+#include "view/asset.h"
+#include "view/view.h"
 
 using namespace std;
 using namespace colnago::entity;
 using namespace colnago::utils;
 using namespace colnago::service;
 using namespace colnago::db;
+using namespace colnago::view;
 
 static const regex image_regex(string("image/.*"));
 
@@ -149,17 +152,35 @@ void colnago::router::ImageController::GET_LIST(const std::shared_ptr<restbed::S
     return;
 }
 
+/**
+ * @brief 图片页面
+ *
+ * @param session
+ */
+void colnago::router::ImageController::IMAGES_PAGE(const std::shared_ptr<restbed::Session> session)
+{
+    std::string response = colnago::view::render(Asset::source("images.html").c_str(), nlohmann::json::parse("{}"));
+    session->close(restbed::OK, response, ResponseHeader::Base(ResponseHeader::HTML));
+    return;
+}
+
 std::shared_ptr<restbed::Resource> colnago::router::ImageController::resource(std::shared_ptr<restbed::Service> service)
 {
-    const char *postRestFul = "/image";
     auto resource = make_shared<restbed::Resource>();
-    resource->set_path(postRestFul);
+    resource->set_path("/image");
     resource->set_method_handler("POST", ImageController::POST);
     resource->set_method_handler("GET", ImageController::GET);
+
     auto resource_list = make_shared<restbed::Resource>();
     resource_list->set_path("/image/list");
     resource_list->set_method_handler("GET", ImageController::GET_LIST);
+
+    auto resource_images_page = make_shared<restbed::Resource>();
+    resource_images_page->set_path("/images");
+    resource_images_page->set_method_handler("GET", ImageController::IMAGES_PAGE);
+
     service->publish(resource);
     service->publish(resource_list);
+    service->publish(resource_images_page);
     return resource;
 }

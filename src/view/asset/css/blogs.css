@@ -1,0 +1,6 @@
+.blog-text {
+  width: 100%;
+  padding: 1rem;
+  min-height: 10rem;
+  resize: vertical;
+}

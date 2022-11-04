@@ -1,0 +1,22 @@
+header {
+  width: 100%;
+  position: fixed;
+  z-index: 1000;
+  background-color: #ffffff;
+  height: 3rem;
+  border-bottom: #d2d4d4 1px solid;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.header-tag {
+  margin: 0px 0.5rem;
+  color: #fa6f6f;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.header-tag:hover {
+  color: #0066cc;
+}

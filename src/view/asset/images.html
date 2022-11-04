@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sylife</title>
+    <style>
+        {%include "css/common.css"%}
+        {%include "css/header.css"%}
+        {%include "css/footer.css"%}
+        {%include "css/images.css"%}
+    </style>
+</head>
+
+<body>
+    {% include "components/header.html"%}
+    <main class="min-100-vh">
+        <div class="flex-around pading-normal flex-wrap" id="imgCard">
+        </div>
+    </main>
+    {% include "components/footer.html" %}
+</body>
+<script>
+    fetch("/image/list?page=1", {
+        method: "GET"
+    }).then(res => {
+        return res.json();
+    }).then(data => {
+        let card = document.getElementById("imgCard");
+        for (let item of data.list) {
+            let img = document.createElement("img");
+            img.classList.add("poster");
+            img.src = item.url;
+            card.appendChild(img);
+        }
+        console.log(data);
+    });
+</script>
+
+</html>
