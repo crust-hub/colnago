@@ -1,5 +1,45 @@
-img {
-  width: 40%;
+.img {
+  width: 90%;
   border-radius: 0.8rem;
   margin: 1rem;
+}
+
+@media screen and (min-width: 900px) {
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .img-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .img-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
 }

@@ -5,34 +5,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colnago</title>
-    <style>{% include "css/common.css" %}</style>
-    <style>{% include "css/index.css" %}</style>
+    <title>SYours</title>
+    <style>
+        {%include "css/common.css"%}
+        {%include "css/header.css"%}
+        {%include "css/footer.css"%}
+    </style>
 </head>
 
 <body>
     {% include "components/header.html"%}
-    <main>
-        <div class="content">
-            <div class="box">
-                <div class="Card">
-                    {% for post in list %}
-                    <textarea readonly class="resize-vertical">
-hub-code: {{ post.id }}
-
+    <main class="page-container">
+        <div style="border:1px grey dashed;border-radius:0.5rem;padding: 1rem;margin: 1rem 0;">
+            <div>
+                {% for post in list %}
+                <h2 style="margin: 1rem 0;">Post ID: {{ post.id }}</h2>
+                <textarea readonly class="resize-vertical" style="min-height:100vh;">
 {{ post.text }}
 
-update date: {{ post.date }}
-                    </textarea>
-                    {% endfor %}
-                </div>
+Date: {{ post.date }}
+                </textarea>
+                {% endfor %}
             </div>
         </div>
     </main>
-    <footer>
-        <p>© 2022 crust-hub, Inc.</p>
-        <p><a href="https://github.com/crust-hub" target="_blank">@Github</a></p>
-    </footer>
+    {% include "components/footer.html"%}
 </body>
 
 </html>

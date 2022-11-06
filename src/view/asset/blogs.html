@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sylife</title>
+    <title>SYours</title>
     <style>
         {%include "css/common.css"%}
         {%include "css/header.css"%}
@@ -16,13 +16,13 @@
 
 <body>
     {% include "components/header.html"%}
-    <main>
+    <main class="page-container">
         <div>
             <ul class="GET">
                 {% for post in list %}
-                <li>
+                <li style="border-bottom: 1px grey dashed;">
                     <textarea readonly class="blog-text">{{ post.date }}  {{ post.text }}</textarea>
-                    <p style="text-align: right; padding:1rem;"><a href="/detail/{{ post.id }}">detail</a></p>
+                    <p style="text-align: right; padding:1rem;"><a href="/detail/{{ post.id }}">Detail</a></p>
                 </li>
                 {% endfor %}
             </ul>
@@ -43,14 +43,14 @@
                     const n = Number(map.get("page"));
                     page = n <= 0 ? 1 : n;
                 }
-                document.write(`<div class="change_box">
-                                            <a href="/blogs?page=${page-1}">before</a>
+                document.write(`<div class="flex-around pading-normal" style="margin-top:1rem;">
+                                            <a href="/blogs?page=${page-1}">BEFORE</a>
                                             ${page} 
-                                            <a href="/blogs?page=${page+1}">after</a>
+                                            <a href="/blogs?page=${page+1}">AFTER</a>
                                         </div>`);
             </script>
         </div>
-        <div>
+        <div style="margin-top: 1rem;">
             <h2>Shared Yours</h2>
             <form id="form_POST">
                 <textarea class="blog-text" placeholder="text content"></textarea><br />

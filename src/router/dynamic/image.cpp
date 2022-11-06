@@ -140,7 +140,8 @@ void colnago::router::ImageController::GET_LIST(const std::shared_ptr<restbed::S
         page = stoll(page_str);
     }
     odb::transaction t(db::db->begin());
-    auto res_list = Service<Image>::page(odb::query<Image>::id.is_not_null(), 10, page);
+    //最新的图片页面
+    auto res_list = Service<Image>::page(odb::query<Image>::id.is_not_null() + "ORDER BY" + odb::query<Image>::id + "DESC", 10, page);
     t.commit();
     BaseResponse<Image> base_response(true, "检索成功", *res_list);
     auto res = base_response.stringify([](Image &image) -> std::string
@@ -159,7 +160,23 @@ void colnago::router::ImageController::GET_LIST(const std::shared_ptr<restbed::S
  */
 void colnago::router::ImageController::IMAGES_PAGE(const std::shared_ptr<restbed::Session> session)
 {
-    std::string response = colnago::view::render(Asset::source("images.html").c_str(), nlohmann::json::parse("{}"));
+    const auto request = session->get_request();
+    auto page_str = request->get_query_parameter("page");
+    long long int page = 1;
+    if (page_str != "")
+    {
+        page = stoll(page_str);
+    }
+    odb::transaction t(db::db->begin());
+    auto res_list = Service<Image>::page(odb::query<Image>::id.is_not_null() + "ORDER BY" + odb::query<Image>::id + "DESC", 10, page);
+    t.commit();
+    BaseResponse<Image> base_response(true, "检索成功", *res_list);
+    auto res = base_response.stringify([](Image &image) -> std::string
+                                       { 
+                                        json j = json::parse(R"({"url":""})");
+                                        j["url"] = string("/image?id=") + to_string(image.id());
+                                        return j.dump(); });
+    std::string response = colnago::view::render(Asset::source("images.html").c_str(), nlohmann::json::parse(res));
     session->close(restbed::OK, response, ResponseHeader::Base(ResponseHeader::HTML));
     return;
 }

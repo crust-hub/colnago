@@ -49,3 +49,31 @@ a {
 .bg-blur {
   filter: blur(2px);
 }
+
+.page-container{
+  width: 98%;
+  margin-left: 1%;
+  min-height: 100vh;
+}
+
+button{
+  width: auto;
+  padding: 0.5rem;
+  background-color: #fa6f6f;
+  color: aliceblue;
+  cursor: pointer;
+  border-radius: 0.2rem;
+  min-width: 5rem;
+}
+
+li{
+  list-style: none;
+}
+
+textarea{
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.1rem;
+  color: #1d1d1f;
+}

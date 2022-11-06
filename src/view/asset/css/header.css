@@ -13,10 +13,17 @@ header {
 .header-tag {
   margin: 0px 0.5rem;
   color: #fa6f6f;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.header-title {
+  margin: 0px 0.5rem;
+  color: #fa6f6f;
   font-size: 1.3rem;
   font-weight: bold;
 }
 
 .header-tag:hover {
-  color: #0066cc;
+  color: #5e5e5e;
 }

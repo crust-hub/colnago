@@ -41,13 +41,12 @@ namespace colnago
             }
 
             /**
-             * @brief 帖子页面
+             * @brief 帖子页面 /blogs
              *
              * @param session
              */
             void BLOGS_PAGE(const std::shared_ptr<restbed::Session> session)
             {
-                Post post(0, "", "");
                 const auto request = session->get_request();
                 auto page_str = request->get_query_parameter("page");
                 long long int page = 1;
@@ -56,7 +55,8 @@ namespace colnago
                     page = stoll(page_str);
                 }
                 odb::transaction t(db::db->begin());
-                auto res_list = Service<Post>::page(odb::query<Post>::id.is_not_null(), 10, page);
+                //排序最新的帖子为第一页
+                auto res_list = Service<Post>::page(odb::query<Post>::id.is_not_null() + "ORDER BY" + odb::query<Post>::id + "DESC", 10, page);
                 t.commit();
                 BaseResponse<Post> base_response(true, "检索成功", *res_list);
                 auto res = base_response.stringify([](Post &post) -> std::string
