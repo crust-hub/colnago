@@ -33,7 +33,7 @@ namespace colnago
                 JSON = 0,
                 HTML
             };
-            static const std::multimap<std::string, std::string> &Base(type t);
+            static const std::multimap<std::string, std::string> Base(type t);
         };
     }
 }
