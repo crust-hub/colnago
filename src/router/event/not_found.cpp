@@ -1,9 +1,11 @@
 #include "router/event/not_found.h"
 #include <limits.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <memory>
 #include <vector>
 #include <fstream>
+#include <unistd.h>
 #include "view/asset.h"
 #include "view/view.h"
 #include "nlohmann/json.hpp"
@@ -16,62 +18,70 @@ using namespace colnago::entity;
 using namespace colnago::view;
 using namespace colnago::utils;
 
+static void chunk_sender(const shared_ptr<Session> session, int fp)
+{
+    char buffer[20];
+    ssize_t size = read(fp, buffer + 3, 9);
+    buffer[0] = '0' + size;
+    buffer[1] = '\r';
+    buffer[2] = '\n';
+    buffer[3 + size] = '\r';
+    buffer[3 + size + 1] = '\n';
+    // printf("%s", buffer);
+    session->yield(buffer, [&](const shared_ptr<Session> session) -> void
+    { 
+        if(size>0){
+            chunk_sender(session, fp);
+        }else{
+            session->close("0\r\n\r\n");
+            close(fp);
+        } 
+    });
+}
+
+static void file_sender(const shared_ptr<Session> session, int fp)
+{
+    char buffer[20];
+    ssize_t size = read(fp, buffer + 3, 9);
+    buffer[0] = '0' + size;
+    buffer[1] = '\r';
+    buffer[2] = '\n';
+    buffer[3 + size] = '\r';
+    buffer[3 + size + 1] = '\n';
+    // printf("%s", buffer);
+    //, {"Content-Disposition", "attchment"}
+    session->yield(OK, buffer, {{"Transfer-Encoding", "chunked"}}, [&](const shared_ptr<Session> session) -> void
+                   { chunk_sender(session, fp); });
+}
+
 void not_found::event(const shared_ptr<Session> session)
 {
-    session->yield(OK, "8\r\nrestbed \r\n", {{"Transfer-Encoding", "chunked"}}, [](const shared_ptr<Session> session)
-                   { session->yield("10\r\nchunked encoding\r\n", [](const shared_ptr<Session> session)
-                                    { session->close("0\r\n\r\n"); }); });
-    // auto request = session->get_request();
-    // const auto path = request->get_path();
-    // //在resources目录下寻找是否有这个文件
-    // char buf[PATH_MAX];
-    // static const string preffix = string("./resources/");
-    // const string str_path = preffix + path;
-    // realpath(str_path.c_str(), buf);
-    // auto last_path = string(buf);
-    // //真实允许的路径
-    // realpath(preffix.c_str(), buf);
-    // static const string permit = string(buf);
-    // if (util::string_start_with(last_path, permit) && permit != last_path)
-    // {
-    //     FILE *fp = fopen(last_path.c_str(), "r");
-    //     if (fp)
-    //     {
-    //         cout << "存在此文件" << endl;
-    //         struct stat statbuf;
-    //         stat(last_path.c_str(), &statbuf);
-    //         char buffer[1024];
-    //         restbed::Bytes chunk;
-    //         int len = 0;
-    //         while ((len = fread(buffer, 1024, 1, fp)) > 0)
-    //         {
-    //             chunk.clear();
-    //             for (int i = 0; i < len; i++)
-    //             {
-    //                 chunk.push_back(buffer[i]);
-    //             }
-    //             // session->yield(200, chunk);
-    //             session->yield(restbed::OK, chunk, {{"Transfer-Encoding", "chunked"}}, [&](shared_ptr<Session> session) -> void
-    //                            { session->close(); });
-    //             break;
-    //         }
-    //         fclose(fp);
-    //         // session->close();
-    //     }
-    // }
-    // else
-    // {
-    //     if (session->is_closed())
-    //     {
-    //         return;
-    //     }
-    //     static std::shared_ptr<std::string> html;
-    //     if (html == nullptr)
-    //     {
-    //         html = std::make_shared<std::string>();
-    //         nlohmann::json data;
-    //         *html = colnago::view::render(Asset::source("404.html").c_str(), data);
-    //     }
-    //     session->close(restbed::NOT_FOUND, *html, ResponseHeader::Base(ResponseHeader::HTML));
-    // }
+    auto request = session->get_request();
+    const string path = request->get_path();
+    //检查是否有..,其为非法的
+    size_t dot_dot_res = path.find("..");
+    if (dot_dot_res == string::npos) //没有找到
+    {
+        //拼接路径
+        const string file_path = string("./resources/") + path;
+        //检查是否有指定的文件
+        int fp = open(file_path.c_str(), ios::in | ios::binary);
+        if (fp > 0) //找到了文件
+        {
+            cout << "founded " << file_path << endl;
+            return file_sender(session, fp);
+        }
+        else
+        {
+            cout << "not founded " << file_path << endl;
+        }
+    }
+    static std::shared_ptr<std::string> html;
+    if (html == nullptr)
+    {
+        html = std::make_shared<std::string>();
+        nlohmann::json data;
+        *html = colnago::view::render(Asset::source("404.html").c_str(), data);
+    }
+    session->close(restbed::NOT_FOUND, *html, ResponseHeader::Base(ResponseHeader::HTML));
 }
