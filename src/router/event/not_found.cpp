@@ -22,37 +22,58 @@ static void chunk_sender(const shared_ptr<Session> session, int fp)
 {
     char buffer[20];
     ssize_t size = read(fp, buffer + 3, 9);
+    if(size==-1){
+        return;
+    }
     buffer[0] = '0' + size;
     buffer[1] = '\r';
     buffer[2] = '\n';
     buffer[3 + size] = '\r';
-    buffer[3 + size + 1] = '\n';
+    buffer[4 + size] = '\n';
+    buffer[5 + size] = '\0';
+    restbed::Bytes bytes;
+    const int len = 5 + size;
+    for(int i=0;i<len;i++){
+        bytes.push_back(buffer[i]);
+    }
     // printf("%s", buffer);
-    session->yield(buffer, [&](const shared_ptr<Session> session) -> void
-    { 
-        if(size>0){
+    if(size>0)
+        session->yield(bytes, [&](const shared_ptr<Session> session) -> void
+        {
             chunk_sender(session, fp);
-        }else{
-            session->close();
-            close(fp);
-            printf("over\n");
-        } 
-    });
+        });
+    else
+    {
+        session->close("0\r\n\r\n");
+        close(fp);
+        printf("over\n");
+    }
 }
 
 static void file_sender(const shared_ptr<Session> session, int fp)
 {
     char buffer[20];
     ssize_t size = read(fp, buffer + 3, 9);
+    if(size==-1){
+        return;
+    }
     buffer[0] = '0' + size;
     buffer[1] = '\r';
     buffer[2] = '\n';
     buffer[3 + size] = '\r';
-    buffer[3 + size + 1] = '\n';
+    buffer[4 + size] = '\n';
+    buffer[5 + size] = '\0';
+    restbed::Bytes bytes;
+    const int len = 5 + size;
+    for(int i=0;i<len;i++){
+        bytes.push_back(buffer[i]);
+    }
     // printf("%s", buffer);
     //, {"Content-Disposition", "attchment"}
-    session->yield(OK, buffer, {{"Transfer-Encoding", "chunked"}, {"Content-Disposition", "attchment"}}, [&](const shared_ptr<Session> session) -> void
-                   { chunk_sender(session, fp); });
+    session->yield(OK, bytes, {{"Transfer-Encoding", "chunked"}, {"Content-Disposition", "attchment"}}, [&](const shared_ptr<Session> session) -> void
+    { 
+        chunk_sender(session, fp);
+    });
 }
 
 void not_found::event(const shared_ptr<Session> session)
