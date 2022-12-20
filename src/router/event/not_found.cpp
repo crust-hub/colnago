@@ -33,8 +33,9 @@ static void chunk_sender(const shared_ptr<Session> session, int fp)
         if(size>0){
             chunk_sender(session, fp);
         }else{
-            session->close("0\r\n\r\n");
+            session->close();
             close(fp);
+            printf("over\n");
         } 
     });
 }
@@ -50,7 +51,7 @@ static void file_sender(const shared_ptr<Session> session, int fp)
     buffer[3 + size + 1] = '\n';
     // printf("%s", buffer);
     //, {"Content-Disposition", "attchment"}
-    session->yield(OK, buffer, {{"Transfer-Encoding", "chunked"}}, [&](const shared_ptr<Session> session) -> void
+    session->yield(OK, buffer, {{"Transfer-Encoding", "chunked"}, {"Content-Disposition", "attchment"}}, [&](const shared_ptr<Session> session) -> void
                    { chunk_sender(session, fp); });
 }
 
@@ -58,15 +59,15 @@ void not_found::event(const shared_ptr<Session> session)
 {
     auto request = session->get_request();
     const string path = request->get_path();
-    //检查是否有..,其为非法的
+    // 检查是否有..,其为非法的
     size_t dot_dot_res = path.find("..");
-    if (dot_dot_res == string::npos) //没有找到
+    if (dot_dot_res == string::npos) // 没有找到
     {
-        //拼接路径
+        // 拼接路径
         const string file_path = string("./resources/") + path;
-        //检查是否有指定的文件
+        // 检查是否有指定的文件
         int fp = open(file_path.c_str(), ios::in | ios::binary);
-        if (fp > 0) //找到了文件
+        if (fp > 0) // 找到了文件
         {
             cout << "founded " << file_path << endl;
             return file_sender(session, fp);
