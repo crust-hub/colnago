@@ -7,3 +7,4 @@ int main(int argc, char **argv)
     colnago::server::server.start();
     return EXIT_SUCCESS;
 }
+
