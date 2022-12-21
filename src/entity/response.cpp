@@ -7,7 +7,7 @@ using namespace std;
 
 const multimap<string, string> ResponseHeader::Base(ResponseHeader::type t)
 {
-    //static shared_ptr<multimap<string, string>> res;
+    // static shared_ptr<multimap<string, string>> res;
     string type;
     switch (t)
     {
@@ -29,6 +29,6 @@ const multimap<string, string> ResponseHeader::Base(ResponseHeader::type t)
     }
     return *res.get();
     */
-    const multimap<string,string> m_map={{"Content-Type",type}};
+    const multimap<string, string> m_map = {{"Content-Type", type}};
     return m_map;
 }
