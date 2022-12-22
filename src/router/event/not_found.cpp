@@ -20,8 +20,8 @@ using namespace colnago::utils;
 
 static void chunk_sender(const shared_ptr<Session> session, int fp)
 {
-    char buffer[512];
-    ssize_t size = read(fp, buffer, 512);
+    char buffer[10240];
+    ssize_t size = read(fp, buffer, 10240);
     if (size == -1)
     {
         return;
@@ -44,6 +44,7 @@ static void chunk_sender(const shared_ptr<Session> session, int fp)
     {
         bytes.push_back(buffer[i]);
     }
+    //cout<<size<<endl;
     bytes.push_back('\r');
     bytes.push_back('\n');
     if (size > 0)
@@ -59,8 +60,8 @@ static void chunk_sender(const shared_ptr<Session> session, int fp)
 
 static void file_sender(const shared_ptr<Session> session, int fp)
 {
-    char buffer[512];
-    ssize_t size = read(fp, buffer, 512);
+    char buffer[10240];
+    ssize_t size = read(fp, buffer, 10240);
     if (size == -1)
     {
         return;
@@ -77,6 +78,7 @@ static void file_sender(const shared_ptr<Session> session, int fp)
     {
         bytes.push_back(item);
     }
+    //cout<<size<<endl;
     bytes.push_back('\r');
     bytes.push_back('\n');
     for (int i = 0; i < size; i++)
@@ -94,16 +96,31 @@ void not_found::event(const shared_ptr<Session> session)
 {
     auto request = session->get_request();
     const string path = request->get_path();
+    const string range = request->get_header("Range","bytes=0-0");
     // 检查是否有..,其为非法的
     size_t dot_dot_res = path.find("..");
     if (dot_dot_res == string::npos) // 没有找到
     {
+        unsigned long long start = 0;
+        if(range.size() > 7)
+        {
+            string range_number = range.substr(6);
+            string start_str = range_number.substr(0,range_number.find('-'));
+            string end_str = range_number.substr(range_number.find('-')+1);
+            if(start_str=="") start_str="0";
+            if(end_str=="") end_str="0";
+            unsigned long long start_number = stoull(start_str);
+            unsigned long long end_number = stoull(end_str);
+            //cout<<start_number<<"-"<<end_number<<endl;
+            start = start_number;
+        }
         // 拼接路径
         const string file_path = string("./resources/") + path;
         // 检查是否有指定的文件
-        int fp = open(file_path.c_str(), ios::in | ios::binary);
+        int fp = open(file_path.c_str(), ios::in | ios::binary);//| ios::binary
         if (fp > 0) // 找到了文件
         {
+            lseek(fp,SEEK_SET,start);//移动文件指针到指定开始位置
             //cout << "founded " << file_path << endl;
             return file_sender(session, fp);
         }
@@ -121,3 +138,4 @@ void not_found::event(const shared_ptr<Session> session)
     }
     session->close(restbed::NOT_FOUND, *html, ResponseHeader::Base(ResponseHeader::HTML));
 }
+
