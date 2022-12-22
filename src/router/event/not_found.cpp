@@ -87,9 +87,9 @@ static void file_sender(const shared_ptr<Session> session, int fp,string start_s
     }
     bytes.push_back('\r');
     bytes.push_back('\n');
-    string content_range=string("bytes ")+start_str+"-"+file_size+"/*";
+    //string content_range=string("bytes ")+start_str+"-"+file_size+"/*";
     //, {"Content-Disposition", "attchment"}
-    session->yield(206, bytes, {{"Transfer-Encoding", "chunked"},{"Content-Range",content_range}}, [&](const shared_ptr<Session> session) -> void
+    session->yield(200, bytes, {{"Transfer-Encoding", "chunked"}}, [&](const shared_ptr<Session> session) -> void
                    { chunk_sender(session, fp); });
 }
 
