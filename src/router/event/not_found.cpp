@@ -58,7 +58,7 @@ static void chunk_sender(const shared_ptr<Session> session, int fp)
     }
 }
 
-static void file_sender(const shared_ptr<Session> session, int fp)
+static void file_sender(const shared_ptr<Session> session, int fp,string start_str,string file_size)
 {
     char buffer[10240];
     ssize_t size = read(fp, buffer, 10240);
@@ -87,8 +87,9 @@ static void file_sender(const shared_ptr<Session> session, int fp)
     }
     bytes.push_back('\r');
     bytes.push_back('\n');
+    string content_range=string("bytes ")+start_str+"-"+file_size+"/*";
     //, {"Content-Disposition", "attchment"}
-    session->yield(OK, bytes, {{"Transfer-Encoding", "chunked"}}, [&](const shared_ptr<Session> session) -> void
+    session->yield(206, bytes, {{"Transfer-Encoding", "chunked"},{"Content-Range",content_range}}, [&](const shared_ptr<Session> session) -> void
                    { chunk_sender(session, fp); });
 }
 
@@ -120,9 +121,10 @@ void not_found::event(const shared_ptr<Session> session)
         int fp = open(file_path.c_str(), ios::in | ios::binary);//| ios::binary
         if (fp > 0) // 找到了文件
         {
+            unsigned long long file_size=lseek(fp, 0L, SEEK_END)+1;
             lseek(fp,start,SEEK_SET);//移动文件指针到指定开始位置
             //cout << "founded " << file_path << endl;
-            return file_sender(session, fp);
+            return file_sender(session, fp, to_string(start),to_string(file_size));
         }
         else
         {
