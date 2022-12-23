@@ -7,6 +7,7 @@
 
 a {
   text-decoration: none;
+  color: #1d1d1f;
 }
 
 .bold {
@@ -24,7 +25,13 @@ a {
   align-items: center;
 }
 
-.min-100-vh{
+.flex-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.min-100-vh {
   min-height: 100vh;
 }
 
@@ -50,13 +57,13 @@ a {
   filter: blur(2px);
 }
 
-.page-container{
+.page-container {
   width: 98%;
   margin-left: 1%;
   min-height: 100vh;
 }
 
-button{
+button {
   width: auto;
   padding: 0.5rem;
   background-color: #fa6f6f;
@@ -66,11 +73,11 @@ button{
   min-width: 5rem;
 }
 
-li{
+li {
   list-style: none;
 }
 
-textarea{
+textarea {
   border: none;
   outline: none;
   font-size: 0.9rem;

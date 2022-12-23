@@ -20,9 +20,9 @@
         <div>
             <ul class="GET">
                 {% for post in list %}
-                <li style="border-bottom: 1px grey dashed;">
+                <li style="border-bottom: 1px rgb(240, 240, 240) dashed;">
                     <textarea readonly class="blog-text">{{ post.date }}  {{ post.text }}</textarea>
-                    <p style="text-align: right; padding:1rem;"><a href="/detail/{{ post.id }}">Detail</a></p>
+                    <p style="text-align: right; padding:1rem;"><a href="/detail/{{ post.id }}">DETAIL</a></p>
                 </li>
                 {% endfor %}
             </ul>
@@ -51,10 +51,12 @@
             </script>
         </div>
         <div style="margin-top: 1rem;">
-            <h2>Shared Yours</h2>
+            <h2>POST</h2>
             <form id="form_POST">
                 <textarea class="blog-text" placeholder="text content"></textarea><br />
-                <button type="submit" id="submit_POST">submit</button>
+                <div class="flex-right">
+                    <button type="submit" id="submit_POST">submit</button>
+                </div>
             </form>
         </div>
         </div>
