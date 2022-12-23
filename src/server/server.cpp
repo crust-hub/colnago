@@ -15,7 +15,7 @@ namespace colnago
             auto settings = make_shared<restbed::Settings>();
             settings->set_port(20003);
             settings->set_worker_limit(std::thread::hardware_concurrency()); // 最大线程
-            settings->set_connection_timeout(std::chrono::seconds(60*60*1));     // 1 hour
+            settings->set_connection_timeout(std::chrono::seconds(180));     // 180s
             // settings->set_default_header("Connection", "close"); //默认响应头
             std::cout << "start server on 20003 port" << std::endl;
             // 发布路由
